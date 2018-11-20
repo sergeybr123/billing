@@ -9,9 +9,11 @@ use App\Plan;
 use Carbon\Carbon;
 use Throwable;
 
-class ActivateController extends Controller {
+class ActivateController extends Controller
+{
 
-    public function activate(Request $request) {
+    public function activate(Request $request)
+    {
         $subscribe = Subscribe::where('user_id', $request->user_id)->first();
         $invoice = Invoice::find($request->invoice_id);
         $plan = Plan::find($invoice->plan_id);
@@ -44,7 +46,8 @@ class ActivateController extends Controller {
         }
     }
 
-    public function set_not_active() {
+    public function set_not_active()
+    {
         $subscribes = Subscribe::where('end_at', '<=', Carbon::today())->where('active', 1)->get();
         foreach ($subscribes as $subscribe) {
             $subscribe->active = 0;
