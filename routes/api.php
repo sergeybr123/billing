@@ -39,9 +39,8 @@ Route::middleware('auth.basic')->group(function () {
     Route::match(['get', 'post'], 'pay', 'PaymentController@pays');                                                     // Обработка ответа от CloudPayment
     Route::match(['get', 'post'], 'pay-with-day', 'PaymentController@payWithDay');                                      // Подтверждение платежа от менеджера
 
-    Route::get('set-not-active', 'ActivateController@setStatus');                                                       // Меняем статус у неактивных подписок
+    Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
-    Route::get('set-not-active', 'ActivateController@set_not_active');
 });
 
 
