@@ -28,16 +28,32 @@ class ActivateController extends Controller
         $invoice->paid_at = Carbon::now();
         $invoice->save();
 
-        $subscribe->plan_id = $plan->id;
-        $subscribe->interval = $plan->interval;
-        $subscribe->start_at = $date;
-        if ($plan->interval == 'month') {
-            $subscribe->end_at = Carbon::parse($date)->addMonth();
-        } elseif ($plan->interval == 'year') {
-            $subscribe->end_at = Carbon::parse($date)->addYear();
+        if($subscribe != null) {
+            $subscribe->plan_id = $plan->id;
+            $subscribe->interval = $plan->interval;
+            $subscribe->start_at = $date;
+            if ($plan->interval == 'month') {
+                $subscribe->end_at = Carbon::parse($date)->addMonth();
+            } elseif ($plan->interval == 'year') {
+                $subscribe->end_at = Carbon::parse($date)->addYear();
+            }
+            $subscribe->active = true;
+            $subscribe->save();
+        } else {
+            $subscribe = new Subscribe();
+            $subscribe->user_id = $request->user_id;
+            $subscribe->plan_id = $plan->id;
+            $subscribe->interval = $plan->interval;
+            $subscribe->start_at = $date;
+            if ($plan->interval == 'month') {
+                $subscribe->end_at = Carbon::parse($date)->addMonth();
+            } elseif ($plan->interval == 'year') {
+                $subscribe->end_at = Carbon::parse($date)->addYear();
+            }
+            $subscribe->active = true;
+            $subscribe->save();
         }
-        $subscribe->active = true;
-        $subscribe->save();
+
 
         if ($invoice != null && $subscribe != null) {
             return response()->json(['error' => 0]);
