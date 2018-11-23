@@ -15,6 +15,7 @@ class Invoice extends Model
         'amount',
         'type_id',
         'plan_id',
+        'period',
         'service_id',
         'description',
         'paid',

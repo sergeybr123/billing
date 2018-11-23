@@ -22,6 +22,7 @@ class Invoice extends JsonResource
             'amount' => $this->amount,
             'type' => $this->types,
             'plan' => $this->plan,
+            'period' => $this->period,
             'service' => $this->service,
             'description' => $this->description,
             'paid' => $this->paid,

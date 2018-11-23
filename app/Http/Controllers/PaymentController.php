@@ -154,14 +154,14 @@ class PaymentController extends Controller
                     if(Carbon::parse($subscribe->end_at)->format('d.m.Y') < Carbon::parse($request->DateTime)->format('d.m.Y')) {
                         $invoice->start_at = Carbon::now();
                         if($interval == 'month') {
-                            $dt = Carbon::now()->addMonth();
+                            $dt = Carbon::now()->addMonths($invoice->period);
                         }
                         if($interval == 'year') {
                             $dt = Carbon::now()->addYear();
                         }
                     } else {
                         if($interval == 'month') {
-                            $dt = Carbon::parse($subscribe->end_at)->addMonth();
+                            $dt = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
                         }
                         if($interval == 'year') {
                             $dt = Carbon::parse($subscribe->end_at)->addYear();
@@ -197,12 +197,12 @@ class PaymentController extends Controller
 
     public function payWithDay(Request $request)
     {
-        $invoice = Invoice::find($request->id);
+        $invoice = Invoice::findOrFail($request->id);
         if($invoice) {
             $invoice->paid = 1;
             $invoice->paid_at = $request->date;
             $invoice->save();
-            return response()->json(['error' => 0]);
+            return response()->json(['error' => 0, 'message' => $invoice]);
         } else {
             return response()->json(['error' => 1]);
         }

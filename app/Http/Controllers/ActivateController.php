@@ -24,16 +24,18 @@ class ActivateController extends Controller
             $date = $request->date;
         }
 
-        $invoice->paid = true;
-        $invoice->paid_at = Carbon::now();
-        $invoice->save();
+        if($invoice->paid == 0 && $invoice->paid_at == null) {
+            $invoice->paid = true;
+            $invoice->paid_at = Carbon::now();
+            $invoice->save();
+        }
 
         if($subscribe != null) {
             $subscribe->plan_id = $plan->id;
             $subscribe->interval = $plan->interval;
             $subscribe->start_at = $date;
             if ($plan->interval == 'month') {
-                $subscribe->end_at = Carbon::parse($date)->addMonth();
+                $subscribe->end_at = Carbon::parse($date)->addMonths($invoice->period);
             } elseif ($plan->interval == 'year') {
                 $subscribe->end_at = Carbon::parse($date)->addYear();
             }
@@ -46,7 +48,7 @@ class ActivateController extends Controller
             $subscribe->interval = $plan->interval;
             $subscribe->start_at = $date;
             if ($plan->interval == 'month') {
-                $subscribe->end_at = Carbon::parse($date)->addMonth();
+                $subscribe->end_at = Carbon::parse($date)->addMonths($invoice->period);
             } elseif ($plan->interval == 'year') {
                 $subscribe->end_at = Carbon::parse($date)->addYear();
             }
