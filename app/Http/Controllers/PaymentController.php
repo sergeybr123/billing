@@ -118,10 +118,16 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $subscribe = Subscribe::findOrFail($id);
+        $subscribe->delete();
+        try {
+            return response()->json(['error' => 0, 'message' => 'Запись успешно удалена']);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 1, 'message' => $th]);
+        }
     }
 
-
+    /*----------Принимаем ответ от CloudPayment------------*/
     public function pays(Request $request)
     {
         $code = 1;
@@ -148,11 +154,23 @@ class PaymentController extends Controller
                 $invoice->paid = true;
                 $invoice->paid_at = $request->DateTime;
                 $invoice->save();
+
+                $subscribe = Subscribe::where('user_id', $invoice->user_id)->first();
+                $plan = Plan::findOrFail($invoice->plan_id);
+                $interval = $plan->interval;
+
+                /*-----------Если нет подписки создаем-----------*/
+                if($subscribe == null) {
+                    $subscribe = new Subscribe();
+                    $subscribe->plan_id = $plan->id;
+                    $subscribe->interval = $interval;
+                    $subscribe->start_at = Carbon::now();
+                }
+
+                /*------------Если продление подписки-------------*/
                 if($invoice->type_id == 1) {
-                    $subscribe = Subscribe::where('user_id', $invoice->user_id)->first();
-                    $interval = $subscribe->interval;
                     if(Carbon::parse($subscribe->end_at)->format('d.m.Y') < Carbon::parse($request->DateTime)->format('d.m.Y')) {
-                        $invoice->start_at = Carbon::now();
+                        $subscribe->start_at = Carbon::now();
                         if($interval == 'month') {
                             $dt = Carbon::now()->addMonths($invoice->period);
                         }
@@ -169,32 +187,34 @@ class PaymentController extends Controller
                     }
                     $subscribe->end_at = $dt;
                     $subscribe->active = true;
-                    $subscribe->save();
+//                    $subscribe->save();
                 }
+                /*----------------Если переподписка на новый тариф-------------------*/
                 if($invoice->type_id == 2) {
-                    $subscribe = Subscribe::where('user_id', $invoice->user_id)->first();
-                    $plan = Plan::find($invoice->plan_id);
-                    $now = Carbon::now();
-                    if($plan->interval == 'month') {
-                        $dt = Carbon::now()->addMonth();
+                    if($interval == 'month') {
+                        $dt = Carbon::now()->addMonths($invoice->period);
                     }
-                    if($plan->interval == 'year') {
+                    if($interval == 'year') {
                         $dt = Carbon::now()->addYear();
                     }
                     $subscribe->plan_id = $plan->id;
-                    $subscribe->interval = $plan->interval;
-                    $subscribe->start_at = $now;
+                    $subscribe->interval = $interval;
+                    $subscribe->start_at = Carbon::now();
                     $subscribe->end_at = $dt;
                     $subscribe->active = true;
-                    $subscribe->save();
+//                    $subscribe->save();
                 }
+                /*-----Сохраняем подписку------*/
+                $subscribe->save();
+                /*-----Записываем код для возврата GetChat------*/
                 $code = 0;
             }
         }
-
+        /*-----------Возвращаем в GetChat---------*/
         return response()->json(['error' => $code]);
     }
 
+    /*---------Выставляем оплату инвойса в ручную--------*/
     public function payWithDay(Request $request)
     {
         $invoice = Invoice::findOrFail($request->id);
