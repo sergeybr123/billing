@@ -38,7 +38,11 @@ class ActivateController extends Controller
             if($invoice->type_id == 1) {
                 // если продление подписки
                 if ($plan->interval == 'month') {
-                    $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                    if($invoice->period != null) {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                    } else {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonth();
+                    }
                 } elseif ($plan->interval == 'year') {
                     $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear();
                 }
@@ -61,7 +65,11 @@ class ActivateController extends Controller
             $subscribe->interval = $plan->interval;
             $subscribe->start_at = $date;
             if ($plan->interval == 'month') {
-                $subscribe->end_at = Carbon::parse($date)->addMonths($invoice->period);
+                if($invoice->period != null) {
+                    $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                } else {
+                    $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonth();
+                }
             } elseif ($plan->interval == 'year') {
                 $subscribe->end_at = Carbon::parse($date)->addYear();
             }

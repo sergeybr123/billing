@@ -172,14 +172,24 @@ class PaymentController extends Controller
                     if(Carbon::parse($subscribe->end_at)->format('d.m.Y') < Carbon::parse($request->DateTime)->format('d.m.Y')) {
                         $subscribe->start_at = Carbon::now();
                         if($interval == 'month') {
-                            $dt = Carbon::now()->addMonths($invoice->period);
+//                            $dt = Carbon::now()->addMonths($invoice->period);
+                            if($invoice->period != null) {
+                                $dt = Carbon::now()->addMonths($invoice->period);
+                            } else {
+                                $dt = Carbon::now()->addMonth();
+                            }
                         }
                         if($interval == 'year') {
                             $dt = Carbon::now()->addYear();
                         }
                     } else {
                         if($interval == 'month') {
-                            $dt = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+//                            $dt = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                            if($invoice->period != null) {
+                                $dt = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                            } else {
+                                $dt = Carbon::parse($subscribe->end_at)->addMonth();
+                            }
                         }
                         if($interval == 'year') {
                             $dt = Carbon::parse($subscribe->end_at)->addYear();
