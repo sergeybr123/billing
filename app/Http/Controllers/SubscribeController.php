@@ -195,6 +195,10 @@ class SubscribeController extends Controller
             $ninv->amount = $subscribe->plans->price;
             $ninv->type_id = 1;
             $ninv->plan_id = $subscribe->plans->id;
+            if($subscribe->plans->interval == 'month') {
+                // Делаем продление на один месяц
+                $ninv->period = 1;
+            }
             $ninv->service_id = null;
             $ninv->description = null;
             $ninv->paid = 0;
