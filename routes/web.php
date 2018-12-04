@@ -15,7 +15,7 @@ use App\User;
 use App\Http\Resources\User as UserResource;
 
 Route::get('/user', function () {
-    return new UserResource(User::find(1));
+    return User::find(1);
 });
 
 Route::get('/', function () {

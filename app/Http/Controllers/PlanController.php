@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Plan;
 use App\Http\Resources\Plan as PlanResource;
-use App\Http\Resources\PlansCollection;
 
 class PlanController extends Controller
 {
@@ -19,16 +18,6 @@ class PlanController extends Controller
     {
 //        return new PlansCollection(Plan::with('features')->get());
         return PlanResource::collection(Plan::where('code', '!=', 'unlimited')->get());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -61,18 +50,12 @@ class PlanController extends Controller
      */
     public function show($id)
     {
-        return new PlanResource(Plan::find($id)->where('code', '!=', 'unlimited'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $plan = Plan::where('id', $id)->first();
+        if($plan != null) {
+            return new PlanResource($plan);
+        } else {
+            return response()->json(['error' => 1]);
+        }
     }
 
     /**
