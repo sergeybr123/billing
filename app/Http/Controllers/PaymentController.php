@@ -162,6 +162,7 @@ class PaymentController extends Controller
                 /*-----------Если нет подписки создаем-----------*/
                 if($subscribe == null) {
                     $subscribe = new Subscribe();
+                    $subscribe->user_id = $invoice->user_id;
                     $subscribe->plan_id = $plan->id;
                     $subscribe->interval = $interval;
                     $subscribe->start_at = Carbon::now();
