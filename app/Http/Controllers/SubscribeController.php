@@ -209,4 +209,27 @@ class SubscribeController extends Controller
             return $inv;
         }
     }
+
+
+    /*--------Подписка на новый тарифный план--------*/
+    public function new_plan(Request $request)
+    {
+        $subscribe = Subscribe::where('user_id', $request->user_id)->first(); // Получаем подписку пользователя
+
+        $plan = Plan::findOrFail($subscribe->plan_id); //Получаем план пользователя
+
+        //Высчитываем неиспользованное количество дней
+        $endDate = Carbon::parse($subscribe->end_at);
+        $countDate = $endDate->diffInDays();
+
+        if($subscribe->interval == 'month') {
+            $planPriceDay = round($plan->price / 30); // Высчитываем стоимость тарифного плана в день
+        } else {
+            $planPriceDay = round(($plan->price - ($plan->price*($plan->discount / 100))) / 30); // Высчитываем стоимость тарифного плана в день в зависимости от скидки
+        }
+
+
+
+        return response()->json(['request' => $request]);
+    }
 }
