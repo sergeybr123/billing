@@ -24,6 +24,7 @@ class Subscribe extends JsonResource
             'start_at' => $this->start_at,
             'end_at' => $this->end_at,
             'active' => $this->active,
+            'last_invoice' => $this->last_invoice,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,

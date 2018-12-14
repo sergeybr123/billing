@@ -14,6 +14,7 @@ class Subscribe extends Model
         'start_at',
         'end_at',
         'active',
+        'last_invoice',
     ];
 
     protected $dates = [

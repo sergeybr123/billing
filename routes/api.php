@@ -11,7 +11,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth.basic')->group(function () {
-    Route::resource('plans', 'PlanController')->except(['create', 'edit']);                                                                     // Тарифные планы
+    Route::resource('plans', 'PlanController')->except(['create', 'edit']);                                         // Тарифные планы
     Route::get('plan/all', 'PlanController@all');                                                                        // Все тарифные планы
     Route::resource('features', 'FeatureController')->except(['create', 'edit']);                                   // Фичи для подписки
     Route::resource('subscribe', 'SubscribeController')->except(['create', 'edit']);                                // Подписка по ИД подписчика
