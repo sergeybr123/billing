@@ -37,10 +37,10 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
-        InvoiceModel::create($request->all());
-        try {
-            return ['error' => 0, 'message' => 'Запись успешно добавлена'];
-        } catch (ParseError $t) {
+        $inv = InvoiceModel::create($request->all());
+        if($inv) {
+            return $inv;
+        } else {
             return ['error' => 1, 'message' => 'Ошибка добавления записи'];
         }
     }

@@ -15,6 +15,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::get('plan/all', 'PlanController@all');                                                                        // Все тарифные планы
     Route::resource('features', 'FeatureController')->except(['create', 'edit']);                                   // Фичи для подписки
     Route::resource('subscribe', 'SubscribeController')->except(['create', 'edit']);                                // Подписка по ИД подписчика
+    Route::resource('additional', 'AdditionalSubscribeController')->except(['create', 'edit']);
     Route::post('subscribe/rewrite/{user_id}/{plan_id}/{period}', 'SubscribeController@rewrite');                        // Переподписка пользователя
     Route::post('subscribe/additional-rewrite/{user_id}/{plan_id}/{month}', 'SubscribeController@additional_rewrite');   // Переподписка дополнительных услуг
     Route::match(['get', 'post'], 'subscribe/free/{user_id}', 'SubscribeController@free');                               // Подписка пользователей на тариф FREE

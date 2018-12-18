@@ -59,7 +59,7 @@ class SubscribeController extends Controller
      */
     public function show($id)
     {
-        $subsc = Subscribe::where('user_id', $id)->with('additional')->first();
+        $subsc = Subscribe::where('user_id', $id)->first();
         if($subsc != null) {
 //            if($subsc->active != 0) {
                 return new SubscribeResource($subsc);
@@ -188,23 +188,23 @@ class SubscribeController extends Controller
         $subscribe = Subscribe::where('user_id', $id)->first();
 
         // Получаем все не оплаченные счета пользователя
-        $inv = Invoice::where('user_id', $id)->where('paid', 0)->where('type_id', 1)->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])->first();
+        $inv = Invoice::where('user_id', $id)->where('paid', 0)->where('type_id', 1)->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])->orderBy('id', 'desc')->first();
         if($inv == null) {
-            $ninv = new Invoice();
-            $ninv->user_id = $id;
-            $ninv->amount = $subscribe->plans->price;
-            $ninv->type_id = 1;
-            $ninv->plan_id = $subscribe->plans->id;
-            if($subscribe->plans->interval == 'month') {
-                // Делаем продление на один месяц
-                $ninv->period = 1;
-            }
-            $ninv->service_id = null;
-            $ninv->description = null;
-            $ninv->paid = 0;
-            $ninv->paid_at = null;
-            $ninv->save();
-            return $ninv;
+//            $ninv = new Invoice();
+//            $ninv->user_id = $id;
+//            $ninv->amount = $subscribe->plans->price;
+//            $ninv->type_id = 1;
+//            $ninv->plan_id = $subscribe->plans->id;
+//            if($subscribe->plans->interval == 'month') {
+//                // Делаем продление на один месяц
+//                $ninv->period = 1;
+//            }
+//            $ninv->service_id = null;
+//            $ninv->description = null;
+//            $ninv->paid = 0;
+//            $ninv->paid_at = null;
+//            $ninv->save();
+            return response()->json(['error' => 1, 'message' => 'Счет не найден']);
         } else {
             return $inv;
         }
