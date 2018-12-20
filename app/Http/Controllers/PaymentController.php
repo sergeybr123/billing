@@ -239,7 +239,7 @@ class PaymentController extends Controller
             if($invoice) {
                 $subscribe = Subscribe::where('user_id', $invoice->user_id)->first();
                 $plan = Plan::findOrFail($invoice->plan_id);
-                if($subscribe == null) {
+                if(is_null($subscribe)) {
                     $subscribe = new Subscribe();
                     $subscribe->user_id = $invoice->user_id;
                     $subscribe->plan_id = $plan->id;
@@ -251,12 +251,20 @@ class PaymentController extends Controller
                         $subscribe->start_at = Carbon::parse($at_date)->format('Y-m-d');
                         $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->interval)->format('Y-m-d');
                     }
-                    $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->interval)->format('Y-m-d');
+                    if($plan->interval == 'month') {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->interval)->format('Y-m-d');
+                    } else {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear()->format('Y-m-d');
+                    }
                 }
                 // Подписка
-                else if($invoice->type_id == 2) {
+                elseif($invoice->type_id == 2) {
                     $subscribe->start_at = Carbon::parse($at_date)->format('Y-m-d');
-                    $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->interval)->format('Y-m-d');
+                    if($plan->interval == 'month') {
+                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->interval)->format('Y-m-d');
+                    } else {
+                        $subscribe->end_at = Carbon::parse($at_date)->addYear()->format('Y-m-d');
+                    }
                 }
                 $subscribe->active = 1;
                 $subscribe->save();
