@@ -228,11 +228,57 @@ class PaymentController extends Controller
     /*---------Выставляем оплату инвойса в ручную--------*/
     public function payWithDay(Request $request)
     {
+//        $invoice = Invoice::findOrFail($request->id);
+//        if($invoice) {
+//            $invoice->paid = 1;
+//            $invoice->paid_at = $request->date;
+//            $invoice->save();
+//            return response()->json(['error' => 0, 'message' => $invoice]);
+//        } else {
+//            return response()->json(['error' => 1]);
+//        }
+        $at_date = $request->date;
+
         $invoice = Invoice::findOrFail($request->id);
         if($invoice) {
             $invoice->paid = 1;
-            $invoice->paid_at = $request->date;
+            $invoice->paid_at = $at_date;
             $invoice->save();
+
+            if($invoice) {
+                $subscribe = Subscribe::where('user_id', $invoice->user_id)->first();
+                $plan = Plan::findOrFail($invoice->plan_id);
+                if($subscribe == null) {
+                    $subscribe = new Subscribe();
+                    $subscribe->user_id = $invoice->user_id;
+                    $subscribe->plan_id = $plan->id;
+                    $subscribe->interval = $plan->interval;
+                }
+                // Продление
+                if($invoice->type_id == 1) {
+                    if($subscribe->end_at < $at_date) {
+                        $subscribe->start_at = Carbon::parse($at_date)->format('Y-m-d');
+                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->interval)->format('Y-m-d');
+                    }
+                    if($plan->interval == 'month') {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->interval)->format('Y-m-d');
+                    } else {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear()->format('Y-m-d');
+                    }
+                }
+                // Подписка
+                elseif($invoice->type_id == 2) {
+                    $subscribe->start_at = $at_date;
+                    if($plan->interval == 'month') {
+                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->interval)->format('Y-m-d');
+                    } else {
+                        $subscribe->end_at = Carbon::parse($at_date)->addYear()->format('Y-m-d');
+                    }
+                }
+                $subscribe->active = 1;
+                $subscribe->save();
+            }
+
             return response()->json(['error' => 0, 'message' => $invoice]);
         } else {
             return response()->json(['error' => 1]);
