@@ -90,6 +90,8 @@ class ActivateController extends Controller
         foreach ($subscribes as $subscribe) {
             $subscribe->active = 0;
             $subscribe->save();
+
+            /*--------Вставить код для отправки в amoCRM--------*/
         }
         try {
             return response()->json(['error' => 0, 'subscribes' => $subscribes]);
