@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+//            Ограничение по скорости
 //            'throttle:60,1',
             'bindings',
         ],
