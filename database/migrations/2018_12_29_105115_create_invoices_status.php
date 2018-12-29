@@ -14,7 +14,7 @@ class CreateInvoicesStatus extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->enum('status', ['active', 'paid', 'completed'])->default('active')->after('usages');
+            $table->enum('status', ['active', 'paid', 'completed'])->default('active')->after('options');
         });
     }
 
