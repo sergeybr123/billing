@@ -29,6 +29,7 @@ class Invoice extends JsonResource
             'paid_at' => $this->paid_at ? Carbon::parse($this->paid_at)->toDateTimeString() : null,
             'options' => $this->options,
             'usages' => $this->usages,
+            'status' => $this->status,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,

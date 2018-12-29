@@ -133,7 +133,7 @@ class PaymentController extends Controller
         $code = 1;
 
         if(strlen($request->InvoiceId) <6) {
-            Storage::put($request->InvoiceId.'.txt', $request);
+            Storage::put(json_decode($request->InvoiceId).'.json', $request);
             $code = 0;
         } else {
             $invoice = Invoice::findOrFail($request->InvoiceId);
@@ -153,6 +153,7 @@ class PaymentController extends Controller
                 ]);
                 $invoice->paid = true;
                 $invoice->paid_at = $request->DateTime;
+                $invoice->status = 'paid';
                 $invoice->save();
 
                 if($invoice->type_id == 1 || $invoice->type_id == 2) {
@@ -238,6 +239,7 @@ class PaymentController extends Controller
         if($invoice) {
             $invoice->paid = 1;
             $invoice->paid_at = $at_date;
+            $invoice->status = 'paid';
             $invoice->save();
 
             if($invoice) {
