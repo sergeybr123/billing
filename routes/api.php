@@ -42,4 +42,11 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
+    /*--------Для других нужд--------*/
+    Route::prefix('other')->group(function() {
+        /*--------Сделать счета не активными--------*/
+        Route::get('set-not-active', 'OtherController@setNotActive');
+        /*--------Изменить стоимость пакетов--------*/
+        Route::get('change-price', 'OtherController@changePrice');
+    });
 });
