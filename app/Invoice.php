@@ -20,6 +20,7 @@ class Invoice extends Model
         'description',
         'paid',
         'paid_at',
+        'status',
     ];
 
     protected $casts = [

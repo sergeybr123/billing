@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\AdditionalSubscribe;
 
 class Subscribe extends Model
 {
@@ -14,6 +15,7 @@ class Subscribe extends Model
         'start_at',
         'end_at',
         'active',
+        'last_invoice',
     ];
 
     protected $dates = [
@@ -27,8 +29,8 @@ class Subscribe extends Model
         return $this->belongsTo('App\Plan', 'plan_id', 'id');
     }
 
-    public function additional()
+    public function additionals()
     {
-        return $this->hasMany(AdditionalSubscribe::class, 'subscribe_id', 'id');
+        return $this->hasMany(/*'App\AdditionalSubscribe'*/AdditionalSubscribe::class, 'subscribe_id', 'id');
     }
 }

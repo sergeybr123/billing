@@ -11,10 +11,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth.basic')->group(function () {
-    Route::resource('plans', 'PlanController')->except(['create', 'edit']);                                                                     // Тарифные планы
+    Route::resource('plans', 'PlanController')->except(['create', 'edit']);                                         // Тарифные планы
     Route::get('plan/all', 'PlanController@all');                                                                        // Все тарифные планы
     Route::resource('features', 'FeatureController')->except(['create', 'edit']);                                   // Фичи для подписки
     Route::resource('subscribe', 'SubscribeController')->except(['create', 'edit']);                                // Подписка по ИД подписчика
+    Route::resource('additional', 'AdditionalSubscribeController')->except(['create', 'edit']);
     Route::post('subscribe/rewrite/{user_id}/{plan_id}/{period}', 'SubscribeController@rewrite');                        // Переподписка пользователя
     Route::post('subscribe/additional-rewrite/{user_id}/{plan_id}/{month}', 'SubscribeController@additional_rewrite');   // Переподписка дополнительных услуг
     Route::match(['get', 'post'], 'subscribe/free/{user_id}', 'SubscribeController@free');                               // Подписка пользователей на тариф FREE
@@ -41,8 +42,11 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
+    /*--------Для других нужд--------*/
+    Route::prefix('other')->group(function() {
+        /*--------Сделать счета не активными--------*/
+        Route::get('set-not-active', 'OtherController@setNotActive');
+        /*--------Изменить стоимость пакетов--------*/
+        Route::get('change-price', 'OtherController@changePrice');
+    });
 });
-
-
-
-
