@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Http\Resources\Service as ServiceResource;
 use App\Service;
 
 class ServicesController extends Controller
@@ -15,7 +15,7 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        return Service::all();
+        return ServiceResource::collection(Service::where('active', true)->get());
     }
 
     /**
@@ -36,7 +36,12 @@ class ServicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $service = Service::create($request->all());
+        if($service) {
+            return ['error' => 0, 'message' => 'Запись успешно добавлена'];
+        } else {
+            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
+        }
     }
 
     /**
@@ -47,7 +52,7 @@ class ServicesController extends Controller
      */
     public function show($id)
     {
-        //
+        return new ServiceResource(Service::findOrFail($id));
     }
 
     /**
@@ -70,7 +75,12 @@ class ServicesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $service = Service::findOrFail($id);
+        if($service) {
+            $service->update($request->all());
+        } else {
+            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
+        }
     }
 
     /**
