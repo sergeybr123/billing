@@ -133,7 +133,7 @@ class PaymentController extends Controller
         $code = 1;
 
         if(strlen($request->InvoiceId) <6) {
-            Storage::put(json_decode($request->InvoiceId).'.json', $request);
+            Storage::put($request->InvoiceId.'.json', json_decode($request));
             $code = 0;
         } else {
             $invoice = Invoice::findOrFail($request->InvoiceId);
