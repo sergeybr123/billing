@@ -29,6 +29,7 @@ class Plan extends JsonResource
             'sort_order' => $this->sort_order,
             'on_show' => $this->on_show,
             'active' => $this->active,
+            'bot_count' => $this->bot_count,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
             'features' => $this->features,

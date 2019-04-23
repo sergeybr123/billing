@@ -17,7 +17,7 @@ class CreateFeaturesTable extends Migration
             $table->increments('id');
             $table->boolean('is_group')->default(0);                       // пометка, что это группа
             $table->unsignedInteger('parent_id')->nullable();                    // ид родителя если это потомок
-            $table->string('code', 100)->unique();                        // код фичи(латиница, без пробелов)
+            $table->string('code', 100);                                  // код фичи(латиница, без пробелов)
             $table->string('name', 255);                                  // наименование фичи
             $table->text('description')->nullable();                             // описание фичи(форматированный текст, теги)
             $table->string('interval')->nullable();                              // day, month, year
