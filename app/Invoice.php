@@ -41,4 +41,9 @@ class Invoice extends Model
     {
         return $this->hasOne('App\Service', 'id', 'service_id');
     }
+
+//    public function additional()
+//    {
+//        return $this->hasOne('App\AdditionalSubscribe', 'id', 'subscribe_id');
+//    }
 }

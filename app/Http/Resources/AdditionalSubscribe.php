@@ -18,7 +18,7 @@ class AdditionalSubscribe extends JsonResource
         return [
             'id' => $this->id,
             'subscribe_id' => $this->subscribe_id,
-            'additional_type' => $this->type,
+            'additional_type' => $this->type()->name,
             'quantity' => $this->quantity,
             'price' => $this->price,
             'trial_ends_at' => $this->trial_ends_at ? Carbon::parse($this->trial_ends_at)->toDateTimeString() : null,

@@ -31,6 +31,6 @@ class Subscribe extends Model
 
     public function additionals()
     {
-        return $this->hasMany(/*'App\AdditionalSubscribe'*/AdditionalSubscribe::class, 'subscribe_id', 'id');
+        return $this->hasMany(AdditionalSubscribe::class, 'subscribe_id', 'id')->with('type');
     }
 }

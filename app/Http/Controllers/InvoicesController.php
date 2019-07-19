@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Invoice;
 use Illuminate\Http\Request;
 use App\Invoice as InvoiceModel;
 use App\Http\Resources\Invoice as InvoiceResource;
@@ -112,7 +113,6 @@ class InvoicesController extends Controller
         } else {
             return ['error' => 1, 'message' => 'Счет не найден'];
         }
-
     }
 
 
@@ -127,5 +127,17 @@ class InvoicesController extends Controller
     {
         $count = InvoiceModel::whereNull('deleted_at')->count();
         return $count;
+    }
+
+    public function completed($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        if($invoice) {
+            $invoice->status = 'completed';
+            $invoice->save();
+            return response()->json(['error' => 0, 'status' => 'completed']);
+        } else {
+            return response()->json(['error' => 1]);
+        }
     }
 }

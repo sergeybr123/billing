@@ -16,6 +16,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::resource('features', 'FeatureController')->except(['create', 'edit']);                                   // Фичи для подписки
     Route::resource('subscribe', 'SubscribeController')->except(['create', 'edit']);                                // Подписка по ИД подписчика
     Route::resource('additional', 'AdditionalSubscribeController')->except(['create', 'edit']);
+    Route::get('additional-type/all', 'AdditionalTypeController@all');                                                   // Все виды дополнений к подписке
     Route::post('subscribe/rewrite/{user_id}/{plan_id}/{period}', 'SubscribeController@rewrite');                        // Переподписка пользователя
     Route::post('subscribe/additional-rewrite/{user_id}/{plan_id}/{month}', 'SubscribeController@additional_rewrite');   // Переподписка дополнительных услуг
     Route::match(['get', 'post'], 'subscribe/free/{user_id}', 'SubscribeController@free');                               // Подписка пользователей на тариф FREE
@@ -46,6 +47,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::prefix('other')->group(function() {
         /*--------Сделать счета не активными--------*/
         Route::get('set-not-active', 'OtherController@setNotActive');
+        Route::get('set-completed/{id}', 'InvoicesController@completed'); // ставим статус completed
         /*--------Изменить стоимость пакетов--------*/
         Route::get('change-price', 'OtherController@changePrice');
     });
