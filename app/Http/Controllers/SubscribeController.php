@@ -238,6 +238,7 @@ class SubscribeController extends Controller
         $subscribe->plan_id = $free->id;
         $subscribe->interval = $free->interval;
         $subscribe->start_at = Carbon::now();
+        $subscribe->active = 1;
         $subscribe->save();
         return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);
     }

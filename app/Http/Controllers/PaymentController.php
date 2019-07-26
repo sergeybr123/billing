@@ -213,6 +213,9 @@ class PaymentController extends Controller
 //                        if($interval == 'year') {
 //                            $dt = Carbon::now()->addYear();
 //                        }
+//                        if($subscribe->plan_id == 8 && $plan->id != 8) {
+//
+//                        }
                         $subscribe->plan_id = $plan->id;
                         $subscribe->interval = $interval;
                         $subscribe->start_at = Carbon::now();
