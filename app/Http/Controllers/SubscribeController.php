@@ -227,9 +227,18 @@ class SubscribeController extends Controller
         } else {
             $planPriceDay = round(($plan->price - ($plan->price*($plan->discount / 100))) / 30); // Высчитываем стоимость тарифного плана в день в зависимости от скидки
         }
-
-
-
         return response()->json(['request' => $request]);
+    }
+
+    public function setFreeSubscribe($user_id)
+    {
+        $free = Plan::where('code', 'free')->first();
+        $subscribe = new Subscribe();
+        $subscribe->user_id = $user_id;
+        $subscribe->plan_id = $free->id;
+        $subscribe->interval = $free->interval;
+        $subscribe->start_at = Carbon::now();
+        $subscribe->save();
+        return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);
     }
 }

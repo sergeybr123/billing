@@ -31,6 +31,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::get('user-invoice/{id}', 'InvoicesController@userInvoice');                                                  // Получаем все счета по ИД пользователя
 
     Route::get('ext-subscribe/{id}', 'SubscribeController@extSubscribe');                                               // Продление подписки пользователя по его ИД
+    Route::get('set-free/{id}', 'SubscribeController@setFreeSubscribe');                                                // Даем бесплатную подписку
 
     Route::get('invoice-count', 'InvoicesController@countInvoice');                                                     // Возврат integer числа счетов
 
