@@ -230,6 +230,7 @@ class SubscribeController extends Controller
         return response()->json(['request' => $request]);
     }
 
+    // При регистрации даем подписку FREE
     public function setFreeSubscribe($user_id)
     {
         $free = Plan::where('code', 'free')->first();
