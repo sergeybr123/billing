@@ -256,10 +256,11 @@ class PaymentController extends Controller
                     $subscribe->interval = $plan->interval;
                 }
                 // Продление
+                $subscribe->plan_id = $plan->id;
                 if($invoice->type_id == 1) {
-                    if($subscribe->plan_id != $plan->id) {
-                        $subscribe->plan_id = $plan->id;
-                    }
+//                    if($subscribe->plan_id != $plan->id) {
+
+//                    }
                     if($subscribe->end_at < $at_date) {
                         $subscribe->start_at = Carbon::parse($at_date);
                         $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
