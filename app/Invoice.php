@@ -3,11 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice extends Model
 {
 //    protected $connection = 'mysql';
 //    protected $table = 'invoices';
+
+//    use SoftDeletes;
 
     protected $fillable = [
         'manager_id',
@@ -19,12 +22,19 @@ class Invoice extends Model
         'service_id',
         'description',
         'paid',
-        'paid_at',
+
         'status',
     ];
 
     protected $casts = [
         'options' => 'array',
+    ];
+
+    protected $dates = [
+        'paid_at',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     public function types()
@@ -40,6 +50,11 @@ class Invoice extends Model
     public function service()
     {
         return $this->hasOne('App\Service', 'id', 'service_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany('App\InvoiceOrder', 'invoice_id', 'id');
     }
 
 //    public function additional()

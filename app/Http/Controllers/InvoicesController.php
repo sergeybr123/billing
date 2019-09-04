@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Plan;
 use App\Invoice;
+use App\Subscribe;
+use App\User;
 use Illuminate\Http\Request;
 use App\Invoice as InvoiceModel;
 use App\Http\Resources\Invoice as InvoiceResource;
@@ -38,12 +41,23 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
-        $inv = InvoiceModel::create($request->all());
-        if($inv) {
-            return $inv;
-        } else {
-            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
-        }
+//        $plan_id = $request->plan;
+//
+//        $bot_count = $request->bot_count;
+        $user = User::where('user_id', $request->user_id)->first();
+        $subscribe = Subscribe::where('user_id', $request->user_id)->first();
+        $plan = Plan::where('id', $subscribe->plan_id)->first();
+//        $bot_create = $request->bot_create;
+
+
+//        $inv = InvoiceModel::create($request->all());
+//        if($inv) {
+//            return $inv;
+//        } else {
+//            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
+//        }
+
+        return $request->user_id;
     }
 
     /**
@@ -140,4 +154,6 @@ class InvoicesController extends Controller
             return response()->json(['error' => 1]);
         }
     }
+
+
 }

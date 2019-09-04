@@ -11,6 +11,7 @@ class Subscribe extends Model
         'user_id',
         'plan_id',
         'interval',
+        'quantity_bot',
         'trial_ends_at',
         'start_at',
         'end_at',

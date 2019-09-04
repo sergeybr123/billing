@@ -21,7 +21,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::post('subscribe/additional-rewrite/{user_id}/{plan_id}/{month}', 'SubscribeController@additional_rewrite');   // Переподписка дополнительных услуг
     Route::match(['get', 'post'], 'subscribe/free/{user_id}', 'SubscribeController@free');                               // Подписка пользователей на тариф FREE
     Route::match(['get', 'post'], 'subscribe/unlimited/{user_id}', 'SubscribeController@unlimited');                     // Подписка пользователей на тариф Unlimited
-    Route::resource('invoice', 'InvoicesController')->except(['create', 'edit']);                                   // Платежи
+    Route::resource('invoice', 'InvoicesController');                                                               // Платежи
     Route::match(['get', 'post'], 'invoices/{id}/paid', 'InvoicesController@paid');
     Route::resource('type-invoice', 'TypeInvoicesController')->except(['create', 'edit']);                          // Список доступных видов платежей
     Route::resource('services', 'ServicesController')->except(['create', 'edit']);                                  // Список доступных услуг
@@ -44,6 +44,8 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
+
+    Route::post('createInvoice', 'PaymentController@createInvoice');
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
         /*--------Сделать счета не активными--------*/
@@ -51,5 +53,9 @@ Route::middleware('auth.basic')->group(function () {
         Route::get('set-completed/{id}', 'InvoicesController@completed'); // ставим статус completed
         /*--------Изменить стоимость пакетов--------*/
         Route::get('change-price', 'OtherController@changePrice');
+        // Заполняем таблицу с деталями счета
+        Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
+        // В подписке заполнить поле с количеством ботов
+        Route::get('fiiBotCount', 'OtherController@fiiBotCount');
     });
 });

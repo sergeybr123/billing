@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\AdditionalSubscribesType;
+use App\InvoiceOrder;
+use App\Service;
+use App\Subscribe;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Plan;
 use App\Invoice;
@@ -40,4 +46,54 @@ class OtherController extends Controller
         $enterprise->save();
         return response()->json(['error' => 0]);
     }
+
+    public function fillInvoiceOrders()
+    {
+        $invoices = Invoice::where('id', '>', '101121')->get();
+        foreach ($invoices as $invoice)
+        {
+            if($invoice->plan_id) {
+                $plan = Plan::findOrFail($invoice->plan_id);
+                $orders = new InvoiceOrder();
+                $orders->invoice_id = $invoice->id;
+                $orders->type = 'plan';
+                $orders->model = 'App\\Invoice';
+                $orders->paid_id = $plan->id;
+                $orders->name = $plan->name;
+                $orders->price = $plan->price;
+                if ($invoice->period == null) {
+                    $orders->quantity = 1;
+                } else {
+                    $orders->quantity = $invoice->period;
+                }
+                $orders->amount = $invoice->amount;
+                $orders->save();
+            }
+            if ($invoice->service_id) {
+                $service = Service::findOrFail($invoice->service_id);
+                $orders = new InvoiceOrder();
+                $orders->invoice_id = $invoice->id;
+                $orders->type = 'service';
+                $orders->model = 'App\\Service';
+                $orders->paid_id = $service->id;
+                $orders->name = $service->name;
+                $orders->price = $service->price;
+                $orders->quantity = 1;
+                $orders->amount = $invoice->amount;
+                $orders->save();
+            }
+        }
+        return response()->json(['error' => 0, 'invoices' => $invoice]);
+    }
+
+    public function fiiBotCount()
+    {
+        $subscribes = Subscribe::all();
+        foreach ($subscribes as $subscribe) {
+            $subscribe->quantity_bot = $subscribe->plans->bot_count;
+            $subscribe->save();
+        }
+    }
+
+
 }

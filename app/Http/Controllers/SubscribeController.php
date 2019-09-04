@@ -129,6 +129,7 @@ class SubscribeController extends Controller
                     'user_id' => $id,
                     'plan_id' => $plan->id,
                     'interval' => $plan->interval,
+                    'quantity_bot' => $plan->bot_count,
                     'start_at' => Carbon::now(),
                     'active' => 1,
                 ]);
@@ -152,6 +153,7 @@ class SubscribeController extends Controller
                 'user_id' => $id,
                 'plan_id' => $plan->id,
                 'interval' => $plan->interval,
+                'quantity_bot' => $plan->bot_count,
                 'start_at' => Carbon::now(),
                 'active' => 1,
             ]);
@@ -238,6 +240,7 @@ class SubscribeController extends Controller
         $subscribe->user_id = $user_id;
         $subscribe->plan_id = $free->id;
         $subscribe->interval = $free->interval;
+        $subscribe->quantity_bot = $free->bot_count;
         $subscribe->start_at = Carbon::now();
         $subscribe->active = 1;
         $subscribe->save();
