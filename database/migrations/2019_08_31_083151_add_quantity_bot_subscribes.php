@@ -14,7 +14,7 @@ class AddQuantityBotSubscribes extends Migration
     public function up()
     {
         Schema::table('subscribes', function (Blueprint $table) {
-            $table->integer('quantity_bot')->after('interval')->default(0);
+            $table->integer('bot_count')->after('interval')->default(0);
         });
     }
 
@@ -26,7 +26,7 @@ class AddQuantityBotSubscribes extends Migration
     public function down()
     {
         Schema::table('subscribes', function (Blueprint $table) {
-            $table->dropColumn('quantity_bot');
+            $table->dropColumn('bot_count');
         });
     }
 }

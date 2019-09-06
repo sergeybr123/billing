@@ -20,7 +20,7 @@ class Subscribe extends JsonResource
             'user_id' => $this->user_id,
             'plan_id' => $this->plan_id,
             'interval' => $this->interval,
-            'quantity_bot' => $this->quantity_bot,
+            'bot_count' => $this->bot_count,
             'trial_ends_at' => $this->trial_ends_at,
             'start_at' => $this->start_at,
             'end_at' => $this->end_at,

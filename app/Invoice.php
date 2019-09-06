@@ -22,7 +22,6 @@ class Invoice extends Model
         'service_id',
         'description',
         'paid',
-
         'status',
     ];
 

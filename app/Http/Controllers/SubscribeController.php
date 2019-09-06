@@ -240,7 +240,7 @@ class SubscribeController extends Controller
         $subscribe->user_id = $user_id;
         $subscribe->plan_id = $free->id;
         $subscribe->interval = $free->interval;
-        $subscribe->quantity_bot = $free->bot_count;
+        $subscribe->bot_count = $free->bot_count;
         $subscribe->start_at = Carbon::now();
         $subscribe->active = 1;
         $subscribe->save();

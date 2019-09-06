@@ -90,7 +90,7 @@ class OtherController extends Controller
     {
         $subscribes = Subscribe::all();
         foreach ($subscribes as $subscribe) {
-            $subscribe->quantity_bot = $subscribe->plans->bot_count;
+            $subscribe->bot_count = $subscribe->plans->bot_count;
             $subscribe->save();
         }
     }

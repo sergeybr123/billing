@@ -306,6 +306,48 @@ class PaymentController extends Controller
         }
     }
 
+    public function changeInvoice($invoice_id, $date_pay)
+    {
+        $invoice = Invoice::findOrFail($invoice_id);
+        if($invoice) {
+            $invoice->paid = 1;
+            $invoice->paid_at = $date_pay;
+            $invoice->status = 'paid';
+            $invoice->save();
+        } else {
+            return response()->json(['error' => 404, 'message' => 'Not found!']);
+        }
+    }
+
+    public function changeSubscribe($invoice_id)
+    {
+        $invoice = Invoice::findOrFail($invoice_id);
+        $subscribe = Subscribe::findOrFail($invoice->user_id);
+        $plan = Plan::findOrFail($invoice->plan_id);
+        if(!$subscribe) {
+            $subscribe = new Subscribe();
+            $subscribe->user_id = $invoice->user_id;
+            $subscribe->plan_id = $plan->id;
+        }
+        if($subscribe->bot_count < $plan->bot_count) {
+            $subscribe->bot_count = $plan->bot_count;
+        }
+        if($invoice->period < 12) {
+            $subscribe->interval = "month";
+        } else {
+            $subscribe->interval = "year";
+        }
+        $subscribe->start_at = Carbon::today();
+        if($invoice->type_id == 1) {
+
+        } elseif ($invoice->type_id == 2) {
+            $subscribe->end_at = Carbon::create($subscribe->start_at)->addMonths($invoice->period);
+        }
+        $subscribe->last_invoice = $invoice->id;
+        $subscribe->active = 1;
+        $subscribe->save();
+    }
+
     public function getAmount($user_id, $start_at, $end_at, $subscribe_price, $subscribe_plan_id, $period, $plan_price, $plan_discount, $last_invoice)
     {
         if($last_invoice) {
@@ -712,4 +754,6 @@ class PaymentController extends Controller
             return Invoice::findOrFail($invoice->id);
         }
     }
+
+
 }
