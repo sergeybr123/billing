@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\InvoiceOrder;
 use App\Service;
+use App\SubscriptionHistory;
 use Illuminate\Http\Request;
 use App\CPLog;
 use App\Invoice;
@@ -338,14 +339,31 @@ class PaymentController extends Controller
             $subscribe->interval = "year";
         }
         $subscribe->start_at = Carbon::today();
+        $end_subscribe = null;
         if($invoice->type_id == 1) {
-
+            $date_end = new Carbon($subscribe->end_at);
+            $today = Carbon::today();
+            $not_use_subscribe = $date_end->diff($today)->days;
+            $period_days = $invoice->period * 30;
+            $bonus_days = $invoice->bonus_month * 30;
+            $all_days = $not_use_subscribe + $period_days + $bonus_days;
+            $end_subscribe = Carbon::create($subscribe->start_at)->addDays($all_days);
         } elseif ($invoice->type_id == 2) {
-            $subscribe->end_at = Carbon::create($subscribe->start_at)->addMonths($invoice->period);
+            $end_subscribe = Carbon::create($subscribe->start_at)->addMonths($invoice->period + $invoice->bonus_month);
         }
+        $subscribe->end_at = $end_subscribe;
         $subscribe->last_invoice = $invoice->id;
         $subscribe->active = 1;
         $subscribe->save();
+
+        // Записываем в историю
+        $history = new SubscriptionHistory();
+        $history->subscribe_id = $subscribe->id;
+        $history->type = "App\\Subscribe";
+        $history->plan_id = $plan->id;
+        $history->start = Carbon::today();
+        $history->end = $end_subscribe;
+        $history->save();
     }
 
     public function getAmount($user_id, $start_at, $end_at, $subscribe_price, $subscribe_plan_id, $period, $plan_price, $plan_discount, $last_invoice)
