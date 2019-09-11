@@ -484,52 +484,52 @@ class PaymentController extends Controller
                     }
                 }
 //                if(isset($request->period)) {
-                    if($count_plan == 0) {
-//                        return response()->json(['req' => $request->period]);
-                        if($request->period) {
-                            $amount = $this->getAmount($request->user_id, $subscribe->start_at, $subscribe->end_at, $subscribe->plans->price, $subscribe->plans->id, $request->period, $plan->price, $plan->discount, $subscribe->last_invoice);
-                            // Создаем InvoiceOrder
-                            $new_io = new InvoiceOrder();
-                            $new_io->invoice_id = $invoice->id;
-                            $new_io->type = 'plan';
-                            $new_io->model = 'App\\Plan';
-                            $new_io->paid_id = $plan->id;
-                            $new_io->name = $plan->name;
-                            $new_io->price = $plan->price;
-                            $new_io->quantity = $request->period;
-                            if ($request->period == 12) {
-                                $new_io->discount = $plan->discount;
-                            } else {
-                                $new_io->discount = null;
-                            }
-                            $new_io->amount = $amount;
-                            $new_io->save();
+                if($count_plan == 0) {
+//                    return response()->json(['req' => $request->period]);
+                    if($request->period) {
+                        $amount = $this->getAmount($request->user_id, $subscribe->start_at, $subscribe->end_at, $subscribe->plans->price, $subscribe->plans->id, $request->period, $plan->price, $plan->discount, $subscribe->last_invoice);
+                        // Создаем InvoiceOrder
+                        $new_io = new InvoiceOrder();
+                        $new_io->invoice_id = $invoice->id;
+                        $new_io->type = 'plan';
+                        $new_io->model = 'App\\Plan';
+                        $new_io->paid_id = $plan->id;
+                        $new_io->name = $plan->name;
+                        $new_io->price = $plan->price;
+                        $new_io->quantity = $request->period;
+                        if ($request->period == 12) {
+                            $new_io->discount = $plan->discount;
+                        } else {
+                            $new_io->discount = null;
                         }
+                        $new_io->amount = $amount;
+                        $new_io->save();
                     }
-                    if($count_plan == 1){
-                        if($request->period) {
-                            $get_io = InvoiceOrder::findOrFail($io_plan_id);
+                }
+                if($count_plan == 1){
+                    if($request->period) {
+                        $get_io = InvoiceOrder::findOrFail($io_plan_id);
 
-                            $amount = $this->getAmount($request->user_id, $subscribe->start_at, $subscribe->end_at, $subscribe->plans->price, $subscribe->plans->id, $request->period, $plan->price, $plan->discount, $subscribe->last_invoice);
+                        $amount = $this->getAmount($request->user_id, $subscribe->start_at, $subscribe->end_at, $subscribe->plans->price, $subscribe->plans->id, $request->period, $plan->price, $plan->discount, $subscribe->last_invoice);
 
-                            $get_io->paid_id = $plan->id;
-                            $get_io->name = $plan->name;
-                            $get_io->price = $plan->price;
-                            $get_io->quantity = $request->period;
-                            if ($request->period == 12) {
-                                $get_io->discount = $plan->discount;
-                            } else {
-                                $get_io->discount = null;
-                            }
-                            $get_io->amount = $amount;
-                            $get_io->save();
+                        $get_io->paid_id = $plan->id;
+                        $get_io->name = $plan->name;
+                        $get_io->price = $plan->price;
+                        $get_io->quantity = $request->period;
+                        if ($request->period == 12) {
+                            $get_io->discount = $plan->discount;
+                        } else {
+                            $get_io->discount = null;
                         }
-                        if(!$request->period){
-                            $get_io = InvoiceOrder::findOrFail($io_plan_id);
-                            $get_io->delete();
-                        }
-
+                        $get_io->amount = $amount;
+                        $get_io->save();
                     }
+                    if(!$request->period){
+                        $get_io = InvoiceOrder::findOrFail($io_plan_id);
+                        $get_io->delete();
+                    }
+
+                }
 //                }
                 if ($count_service == 0) {
                     if($request->bot_create) {
@@ -575,7 +575,6 @@ class PaymentController extends Controller
                             $get_ser_io->discount = null;
                             $get_ser_io->amount = $service->price * $request->bot_create;
                         }
-
                         $get_ser_io->save();
                     }
                     if(!$request->bot_create) {
@@ -583,7 +582,6 @@ class PaymentController extends Controller
                         $get_ser_io->delete();
                     }
                 }
-
                 if ($count_bot == 0) {
                     if($request->bot_count) {
                         $date_end = new Carbon($subscribe->end_at);
@@ -631,8 +629,6 @@ class PaymentController extends Controller
                         $not_use_sub = $date_end->diff($today)->days; // количество оставшихся дней
                         $in_month = ceil($not_use_sub / 30);
 
-//                        return response()->json([])
-
                         if($request->type == 1) {
                             if($request->bot_count > $subscribe->quantity_bot) {
                                 $get_bot_io->paid_id = $bot->id;
@@ -661,11 +657,6 @@ class PaymentController extends Controller
                         $get_ser_io->delete();
                     }
                 }
-
-
-
-
-
             }
             // Если не найдено ни одного InvoiceOrder
             if(count($ios) == 0){
