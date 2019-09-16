@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class Invoice extends JsonResource
+class RefInvoice extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,23 +17,15 @@ class Invoice extends JsonResource
     {
         return [
             'id' => $this->id,
+            'invoice_id' => $this->invoice_id,
             'manager_id' => $this->manager_id,
             'user_id' => $this->user_id,
             'amount' => $this->amount,
-            'type' => $this->types,
-            'plan_id' => $this->plan_id,
-            'period' => $this->period,
-            'service_id' => $this->service_id,
+            'type' => $this->type,
             'description' => $this->description,
-            'paid' => $this->paid,
-            'paid_at' => $this->paid_at ? Carbon::parse($this->paid_at)->toDateTimeString() : null,
-            'options' => $this->options,
-//            'usages' => $this->usages,
-            'status' => $this->status,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
-            'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,
-            'orders' => $this->orders,
+            'details' => $this->details,
         ];
     }
 }

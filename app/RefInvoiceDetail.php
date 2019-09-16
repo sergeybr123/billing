@@ -4,15 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InvoiceOrder extends Model
+class RefInvoiceDetail extends Model
 {
     protected $fillable = [
-        'invoice_id',
+        'ref_invoice_id',
         'type',
-        'model',
         'paid_id',
         'paid_type',
-        'name',
         'price',
         'quantity',
         'discount',
@@ -23,9 +21,4 @@ class InvoiceOrder extends Model
         'created_at',
         'updated_at',
     ];
-
-    public function invoice()
-    {
-        return $this->belongsTo('App\Invoice', 'invoice_id', 'id');
-    }
 }

@@ -46,6 +46,12 @@ Route::middleware('auth.basic')->group(function () {
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
 
     Route::post('createInvoice', 'PaymentController@createInvoice');
+
+    /*RefInvoice*/
+    Route::prefix('ref')->group(function() {
+        Route::post('create-ref', 'RefController@create_ref_invoice');
+        Route::post('get-test-ref/{user_id}', 'RefController@ref');
+    });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
         /*--------Сделать счета не активными--------*/
