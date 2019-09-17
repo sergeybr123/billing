@@ -49,8 +49,9 @@ Route::middleware('auth.basic')->group(function () {
 
     /*RefInvoice*/
     Route::prefix('ref')->group(function() {
-        Route::post('create-ref', 'RefController@create_ref_invoice');
-        Route::post('get-test-ref/{user_id}', 'RefController@ref');
+        Route::post('create-ref', 'RefController@create_ref_invoice');    // Создаем RefInvoice
+        Route::post('create-ref-invoice-details', 'RefController@create_ref_invoice_detail');   // Добавляем к RefInvoice RefInvoiceDetail
+//        Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
     });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {

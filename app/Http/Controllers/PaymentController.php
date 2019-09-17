@@ -273,9 +273,6 @@ class PaymentController extends Controller
                 // Продление
                 $subscribe->plan_id = $plan->id;
                 if ($invoice->type_id == 1) {
-//                    if($subscribe->plan_id != $plan->id) {
-
-//                    }
                     if ($subscribe->end_at < $at_date) {
                         $subscribe->start_at = Carbon::parse($at_date);
                         $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
@@ -307,6 +304,7 @@ class PaymentController extends Controller
         }
     }
 
+    // Обработка инвойса после поступления платежа от шлюза
     public function changeInvoice($invoice_id, $date_pay)
     {
         $invoice = Invoice::findOrFail($invoice_id);
@@ -320,11 +318,17 @@ class PaymentController extends Controller
         }
     }
 
+    // Обрабока подписки после платежа
     public function changeSubscribe($invoice_id)
     {
         $invoice = Invoice::findOrFail($invoice_id);
+        $invoice_ref_details = $invoice->ref_invoice->details;
         $subscribe = Subscribe::findOrFail($invoice->user_id);
         $plan = Plan::findOrFail($invoice->plan_id);
+
+        
+
+
         if(!$subscribe) {
             $subscribe = new Subscribe();
             $subscribe->user_id = $invoice->user_id;

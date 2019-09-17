@@ -17,8 +17,8 @@ class CreateRefInvoiceDetailsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('ref_invoice_id');
             $table->string('type'); // 'plan', 'service', 'bot', 'mount_bonus', 'ref'
-            $table->unsignedInteger('paid_id');
-            $table->string('paid_type');
+            $table->unsignedInteger('paid_id')->nullable();
+            $table->string('paid_type')->nullable();
             $table->decimal('price', 7, 2)->default(0.00);
             $table->unsignedInteger('quantity')->nullable();
             $table->unsignedInteger('discount')->default(0);

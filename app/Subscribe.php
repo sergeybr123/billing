@@ -20,6 +20,7 @@ class Subscribe extends Model
     ];
 
     protected $dates = [
+
         'created_at',
         'updated_at',
         'deleted_at',
@@ -33,5 +34,10 @@ class Subscribe extends Model
     public function additionals()
     {
         return $this->hasMany(AdditionalSubscribe::class, 'subscribe_id', 'id')->with('type');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'user_id', 'user_id');
     }
 }
