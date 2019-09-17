@@ -326,7 +326,7 @@ class PaymentController extends Controller
         $subscribe = Subscribe::findOrFail($invoice->user_id);
         $plan = Plan::findOrFail($invoice->plan_id);
 
-        
+
 
 
         if(!$subscribe) {
