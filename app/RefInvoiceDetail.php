@@ -11,10 +11,15 @@ class RefInvoiceDetail extends Model
         'type',
         'paid_id',
         'paid_type',
+        'details',
         'price',
         'quantity',
         'discount',
         'amount',
+    ];
+
+    protected $casts = [
+        'details' => 'array'
     ];
 
     protected $dates = [

@@ -10,8 +10,14 @@ class Service extends Model
         'plan_id',
         'name',
         'description',
+        'discount',
+        'quantity',
         'price',
         'active',
+    ];
+
+    protected $casts = [
+        'discount_options' => 'array'
     ];
 
     protected $dates = [

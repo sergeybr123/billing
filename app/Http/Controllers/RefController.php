@@ -22,22 +22,21 @@ class RefController extends Controller
             $ref->manager_id = $request->user_id;
         }
         $ref->user_id = $request->user_id;
-        if($request->type_id) {
-            $ref->type_id = $request->type_id;
-        }
+        $ref->type_id = $request->type_id;
         $ref->save();
         return new RefResource(RefInvoice::findOrFail($ref->id));
     }
 
     public function create_ref_invoice_detail(Request $request)
     {
-        $ref_detail_type = $request->ref_type; // 'plan', 'service', 'bot', 'mount_bonus', 'ref'
+        $ref_detail_type = $request->ref_type; // 'plan', 'service', 'bot', 'bonus', 'ref'
         $ref = RefInvoice::findOrFail($request->ref_id);
         $req_param = $request->param; // param - массив [] id, quantity
         $details = $ref->details;
-        $typed = null;
+        $typed = null; // модель
         $paid_type = null;
 
+        // Выбираем модель данных
         switch ($ref_detail_type) {
             case 'plan':
                 $typed = Plan::faindOrFail($req_param->id)->first();
@@ -48,20 +47,19 @@ class RefController extends Controller
                 $paid_type = 'App\\Service';
                 break;
             case 'bot':
-                $typed = AdditionalSubscribesType::findOrFail(1)->first();
-                $paid_type = 'App\\AdditionalSubscribesType';
+                $typed = Service::findOrFail($req_param->id)->first();
+                $paid_type = 'App\\Service';
                 break;
-            case 'mount_bonus':
-                $typed = AdditionalSubscribesType::findOrFail(2)->first();
-                $paid_type = 'App\\AdditionalSubscribesType';
+            case 'bonus':
+                $typed = Service::findOrFail($req_param->id)->first();
+                $paid_type = 'App\\Service';
                 break;
         }
 
         // Проверяем есть запись с таким типом в RefInvoice
         $ref_invoice_detail = null;
-        foreach ($details as $detail)
-        {
-            if($detail->type == $ref_detail_type) {
+        foreach ($details as $detail) {
+            if($detail->id == $req_param->detail_id) {
                 $ref_invoice_detail = $detail->id;
             }
         }
@@ -85,9 +83,13 @@ class RefController extends Controller
             $new_ref_details->paid_type = $paid_type;
             $new_ref_details->price = $typed->price;
             $new_ref_details->quantity = $req_param->quantity;
-            $new_ref_details->discount = $req_param->quantit < 12 ? 0 : ($typed->discount ?? 0);
-            if($req_param->quantit >= 12) {
-                $new_ref_details->amount = ($typed->price -($typed->price * ($typed->discount / 100))) * $req_param->quantity;
+            $new_ref_details->discount = $typed->discount ?? 0;
+            if($typed->discount) {
+                if($req_param->quantit >= 12) {
+                    $new_ref_details->amount = ($typed->price -($typed->price * ($typed->discount / 100))) * $req_param->quantity;
+                } else {
+                    $new_ref_details->amount = $typed->price * $req_param->quantity;
+                }
             } else {
                 $new_ref_details->amount = $typed->price * $req_param->quantity;
             }
@@ -104,97 +106,124 @@ class RefController extends Controller
         return $ref_invoice;
     }
 
-    public function ref($ref_invoice_id)
+    public function ref($ref_invoice_id) //invoice_id=101563
     {
         $ref_invoice = RefInvoice::findOrFail($ref_invoice_id);
         $subscribe = Subscribe::where('user_id', $ref_invoice->user_id)->first();
         $plan_sub = Plan::findOrFail($subscribe->plan_id);
-        $bot = AdditionalSubscribesType::where('id', 1)->first();
         $ref_invoice_plan = $ref_invoice->details->where('type', 'plan')->first(); // Получаем информацию о новой подписке
         if($ref_invoice_plan) {
             $plan_invoice = Plan::findOrFail($ref_invoice_plan->paid_id); // Получаем план новой подртскт
         }
         $add_bot = $ref_invoice->details->where('type', 'bot')->first(); // Получаем счет на покупку авточатов
-        $last_plan = Invoice::findOrFail($subscribe->last_invoice)->ref_invoice->details->where('type', 'plan')->first(); // Получаем счет на предыдущую оплату тарифного плана
-        if($last_plan) {
-            $last_plan_invoice = Plan::findOrFail($last_plan->paid_id); // Получаем план Старой подписки
-        }
+        $bot = Service::where('type', 'bot')->get();
+        $ref = 0;
+        $ref_bot =0;
+        $bot_count = 0; // записываем количество авточатов на новый период
+        $last_bot_plan = 0;
 
-        // Если подписка активна то счтаем сумму за оставшийся срок, иначе 0
-        if($subscribe->active == true) {
+        // Если подписка пакета платная
+        if($plan_sub->price > 0.00 && $subscribe->active == true) {
+            $last_plan = Invoice::findOrFail($subscribe->last_invoice)->ref_invoice->details->where('type', 'plan')->first(); // Получаем счет на предыдущую оплату тарифного плана
+            $last_bot = Invoice::findOrFail($subscribe->last_invoice)->ref_invoice->details->where('type', 'bot')->first(); // Получаем счет на предыдущую оплату тарифного плана
+            //выбираем количество автчатов свыше подписки
+            if($subscribe->bot_count > $plan_sub->bot_count) {
+                $bot_count += ($subscribe->bot_count - $plan_sub->bot_count);
+                $last_bot_plan += $plan_sub->bot_count;
+            }
+            // Если подписка активна то счтаем сумму за оставшийся срок, иначе 0
             // высчитываем дни подписки
             $d_start = new Carbon($subscribe->start_at);
-            $d_start->format('Y-m-d');
-            if($last_plan->quantity >= 12) {
-                $d_end = Carbon::parse($subscribe->start_at)->addMonths($last_plan->quantity);
-            } else {
-                $d_end = Carbon::parse($subscribe->start_at)->addMonth();
-            }
-            $d_end->format('Y-m-d');
+            $d_end = new Carbon($subscribe->start_at);
+            $d_end->addMonths($last_plan->quantity);
             $today = Carbon::today();
             $count_day_before = $today->diff($d_start)->days; // количество дней от начала подписки
             $last_period_sub = $d_end->diff($d_start)->days; // количество дней подписки
-            $lost_days = $last_period_sub - $count_day_before; // количество неиспользованных дней подписки
+            $lost_days = $last_period_sub - $count_day_before - 1; // количество неиспользованных дней подписки
+            // Считаем сумму оставшейся подписки
             $ref_sum = round(($lost_days * ($last_plan->amount / $last_period_sub)), 0);
-        } else {
-            $ref_sum =  0;
+            // Считаем сумму авточатов
+            if($bot_count > 0) {
+                $ref_sum_bot = round(($lost_days * ($last_bot->amount / $last_period_sub)), 0);
+            }
+            // Проверяем, чтобы сумма ref всегда была >= 0
+            if($ref_sum > 0) {
+                $ref = $ref_sum;
+            }
+            if($ref_sum_bot > 0) {
+                $ref_bot = $ref_sum_bot;
+            }
         }
 
-        // Считаем стоимость авточатов
-        $sum_bot = 0;
-        $sum_bot_day = $bot->price / 30; // Стоимость авточата за 1 день
-        if($subscribe->bot_count > $plan_sub->bot_count) {
-            $sum_bot = (($sum_bot_day * $lost_days) * ($subscribe->bot_count - $last_plan_invoice->bot_count));
-        }
-        if($add_bot) {
-            $sum_bot += (($bot->price * $lost_days) * $add_bot->quantity);
-        }
+        // Считаем количество дней новой подписки
+        $new_period_sub = Carbon::today()->addMonths($ref_invoice_plan->quantity);
+        $new_period_sub_days = Carbon::today()->diff($new_period_sub)->days - 1;
 
+        if($last_bot_plan != $plan_invoice->bot_couny)
+        $bc = ($bot_count + $add_bot->quantity);
+        $sum_bot = round((($bot->price * $new_period_sub_days) * $bc), 0);
 
-        if($ref_invoice_plan) {
-            $new_plan_amount = $ref_invoice_plan->amount;
-        } else {
-            $new_plan_amount = $last_plan->amount;
-        }
+        // Считаем итоговую сумму пользователя
+        $Itot = ($ref_invoice_plan->amount + $sum_bot) - $ref - $ref_bot;
 
-        if($ref_sum > 0) {
-            $ref = $ref_sum;
-        } else {
-            $ref = 0;
-        }
-
-        $Itot = ($new_plan_amount - $ref) + $sum_bot;
-
+        // записываем ref в базу данных
         $ref_id_detail = null;
         foreach ($ref_invoice->details as $detail) {
             if($detail->type == 'ref') {
                 $ref_id_detail = $detail->id;
             }
         }
-
-
-        // Считаем количество дней подписки
-        if($ref_invoice_plan->quantity > 1) {
-            $new_period_sub = Carbon::today()->addMonths(/*$ref_invoice_plan->quantity*/7);
-        } else {
-            $new_period_sub = Carbon::today()->addMonth();
-        }
-        $new_period_sub_days = Carbon::today()->diff($new_period_sub)->days - 1;
-
         // Работаем с 'ref' записью счета
         if($ref_id_detail) {
             $ref_detail = RefInvoiceDetail::findOrFail($ref_id_detail);
-            $ref_detail->quantity = $lost_days + $new_period_sub_days;
+            $ref_detail->details = ['ref' => $ref, 'ref_bot' => $ref_bot];
+            $ref_detail->quantity = $new_period_sub_days;
             $ref_detail->amount = $Itot;
             $ref_detail->save();
         } else {
             $new_ref_details = new RefInvoiceDetail();
             $new_ref_details->ref_invoice_id = $ref_invoice->id;
             $new_ref_details->type = 'ref';
-            $new_ref_details->quantity = $lost_days + $new_period_sub_days;
+            $new_ref_details->details = ['ref' => $ref, 'ref_bot' => $ref_bot];
+            $new_ref_details->amount = $ref;
+            $new_ref_details->quantity = $new_period_sub_days;
             $new_ref_details->amount = $Itot;
             $new_ref_details->save();
         }
-        return response()->json(['error' => 0, 'ref_id' => $ref_invoice->id], 200);
+
+        try {
+            return response()->json(['error' => 0, 'ref_id' => $ref_invoice_id]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    public function createInvoice(Request $request)
+    {
+        $ref_id = $request->ref_id;
+        $ref_invoice = RefInvoice::findOrFail($ref_id);
+        $ref_invoice_details = $ref_invoice->details;
+        $invoice_ref = null;
+        $total_amount = 0;
+
+        foreach ($ref_invoice_details as $detail) {
+            if($detail->type == 'ref') {
+                $invoice_ref = $detail;
+            }
+            if(in_array($detail->type, ['service', 'bonus', 'ref'])) {
+                $total_amount += $detail->amount;
+            }
+        }
+
+        $invoice = new Invoice();
+        $invoice->manager_id = $invoice_ref->manager_id;
+        $invoice->user_id = $invoice_ref->user_id;
+        $invoice->amount = $total_amount;
+        $invoice->type_id = $invoice_ref->type_id;
+        $invoice->description = $invoice_ref->description;
+        $invoice->save();
+
+        $ref_invoice->invoice_id = $invoice->id;
+        $ref_invoice->save();
     }
 }

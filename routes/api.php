@@ -45,13 +45,11 @@ Route::middleware('auth.basic')->group(function () {
     Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
 
-    Route::post('createInvoice', 'PaymentController@createInvoice');
-
     /*RefInvoice*/
     Route::prefix('ref')->group(function() {
         Route::post('create-ref', 'RefController@create_ref_invoice');    // Создаем RefInvoice
         Route::post('create-ref-invoice-details', 'RefController@create_ref_invoice_detail');   // Добавляем к RefInvoice RefInvoiceDetail
-//        Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
+        Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
     });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
@@ -63,6 +61,6 @@ Route::middleware('auth.basic')->group(function () {
         // Заполняем таблицу с деталями счета
         Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
         // В подписке заполнить поле с количеством ботов
-        Route::get('fiiBotCount', 'OtherController@fiiBotCount');
+        Route::get('fiiBotCount', 'OtherController@fillBotCount');
     });
 });

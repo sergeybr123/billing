@@ -86,7 +86,7 @@ class OtherController extends Controller
         return response()->json(['error' => 0, 'invoices' => $invoice]);
     }
 
-    public function fiiBotCount()
+    public function fillBotCount()
     {
         $subscribes = Subscribe::all();
         foreach ($subscribes as $subscribe) {

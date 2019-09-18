@@ -20,6 +20,15 @@ class Plan extends Model
         'bot_count'
     ];
 
+    protected $casts = [
+        'discount_options' => 'array'
+    ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function features()
     {
         return $this->belongsToMany('App\Feature', 'plans_features');
