@@ -24,6 +24,13 @@ class RefController extends Controller
         $ref->user_id = $request->user_id;
         $ref->type_id = $request->type_id;
         $ref->save();
+
+//        if($request->type_id == 1){
+//            $subscribe = Subscribe::findOrFail($request->user_id);
+//            $this->create_ref_invoice($request->except(['ref_type'=> 'plan', 'ref_id' => 1, 'param' => ['plan_id'=>$subscribe->plan_id]]));
+//
+//        }
+
         return new RefResource(RefInvoice::findOrFail($ref->id));
     }
 
@@ -108,6 +115,7 @@ class RefController extends Controller
 
     public function ref($ref_invoice_id) //invoice_id=101563
     {
+//        return response()->json(['test']);
         $ref_invoice = RefInvoice::findOrFail($ref_invoice_id);
         $subscribe = Subscribe::where('user_id', $ref_invoice->user_id)->first();
         $plan_sub = Plan::findOrFail($subscribe->plan_id);
@@ -150,7 +158,7 @@ class RefController extends Controller
             if($ref_sum > 0) {
                 $ref = $ref_sum;
             }
-            if($ref_sum_bot > 0) {
+            if($bot_count > 0 && $ref_sum_bot > 0) {
                 $ref_bot = $ref_sum_bot;
             }
         }
@@ -159,9 +167,11 @@ class RefController extends Controller
         $new_period_sub = Carbon::today()->addMonths($ref_invoice_plan->quantity);
         $new_period_sub_days = Carbon::today()->diff($new_period_sub)->days - 1;
 
-        if($last_bot_plan != $plan_invoice->bot_couny)
+        if($last_bot_plan != $plan_invoice->bot_couny) {
+
+        }
         $bc = ($bot_count + $add_bot->quantity);
-        $sum_bot = round((($bot->price * $new_period_sub_days) * $bc), 0);
+        $sum_bot = round((($bot[0]->price * $new_period_sub_days) * $bc), 0) ?? 0;
 
         // Считаем итоговую сумму пользователя
         $Itot = ($ref_invoice_plan->amount + $sum_bot) - $ref - $ref_bot;
@@ -196,6 +206,7 @@ class RefController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 1]);
         }
+        return $ref;
     }
 
     public function createInvoice(Request $request)

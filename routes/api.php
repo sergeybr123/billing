@@ -62,5 +62,6 @@ Route::middleware('auth.basic')->group(function () {
         Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
         // В подписке заполнить поле с количеством ботов
         Route::get('fiiBotCount', 'OtherController@fillBotCount');
+        Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
     });
 });

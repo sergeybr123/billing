@@ -19,6 +19,10 @@ class Subscribe extends Model
         'last_invoice',
     ];
 
+//    protected $casts = [
+//        'start_at' => 'DateTime',
+//    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -39,4 +43,8 @@ class Subscribe extends Model
     {
         return $this->hasMany(Invoice::class, 'user_id', 'user_id');
     }
+
+//    public function scopeGetCountDevelopBot($query) {
+//        return $query->where()
+//    }
 }
