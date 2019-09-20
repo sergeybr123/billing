@@ -51,18 +51,8 @@ class Invoice extends Model
         return $this->hasOne('App\Service', 'id', 'service_id');
     }
 
-    public function orders()
-    {
-        return $this->hasMany('App\InvoiceOrder', 'invoice_id', 'id');
-    }
-
     public function ref_invoice()
     {
         return $this->hasOne('App\RefInvoice', 'invoice_id', 'id');
     }
-
-//    public function additional()
-//    {
-//        return $this->hasOne('App\AdditionalSubscribe', 'id', 'subscribe_id');
-//    }
 }

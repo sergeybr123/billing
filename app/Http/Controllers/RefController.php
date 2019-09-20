@@ -18,19 +18,12 @@ class RefController extends Controller
     public function create_ref_invoice(Request $request) // user_id
     {
         $ref = new RefInvoice();
-        if($request->user_id) {
-            $ref->manager_id = $request->user_id;
+        if($request->manager_id) {
+            $ref->manager_id = $request->manager_id;
         }
         $ref->user_id = $request->user_id;
         $ref->type_id = $request->type_id;
         $ref->save();
-
-//        if($request->type_id == 1){
-//            $subscribe = Subscribe::findOrFail($request->user_id);
-//            $this->create_ref_invoice($request->except(['ref_type'=> 'plan', 'ref_id' => 1, 'param' => ['plan_id'=>$subscribe->plan_id]]));
-//
-//        }
-
         return new RefResource(RefInvoice::findOrFail($ref->id));
     }
 
@@ -40,6 +33,7 @@ class RefController extends Controller
         $ref = RefInvoice::findOrFail($request->ref_id);
         $req_param = $request->param; // param - массив [] id, quantity
         $details = $ref->details;
+        $ref_inv_plan = $details->where('type', 'plan')->first();
         $typed = null; // модель
         $paid_type = null;
 
@@ -61,6 +55,11 @@ class RefController extends Controller
                 $typed = Service::findOrFail($req_param->id)->first();
                 $paid_type = 'App\\Service';
                 break;
+        }
+        if($ref_detail_type === 'service') {
+            $inv_serv = Invoice::where(['user_id' => $ref->user_id, 'service_id' => 1])->count();
+            $ref_inv_serv = $details->where(['type' => 'service', 'paid_id' => 1])->count();
+            $count_develop = $inv_serv + $ref_inv_serv;
         }
 
         // Проверяем есть запись с таким типом в RefInvoice
