@@ -51,6 +51,9 @@ Route::middleware('auth.basic')->group(function () {
         Route::post('create-ref-invoice-details', 'RefController@create_ref_invoice_detail');   // Добавляем к RefInvoice RefInvoiceDetail
         Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
     });
+    Route::prefix('db')->group(function() {
+        Route::get('insert-tables', 'DbController@insert_tables')->name('insert_tables');
+    });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
         /*--------Сделать счета не активными--------*/
@@ -62,6 +65,5 @@ Route::middleware('auth.basic')->group(function () {
         Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
         // В подписке заполнить поле с количеством ботов
         Route::get('fiiBotCount', 'OtherController@fillBotCount');
-        Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
     });
 });

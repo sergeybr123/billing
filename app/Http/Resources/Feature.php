@@ -19,6 +19,7 @@ class Feature extends JsonResource
             'is_group' => $this->is_group,
             'parent_id' => $this->parent_id,
             'code' => $this->code,
+            'route' => $this->route,
             'name' => $this->name,
             'description' => $this->description,
             'interval' => $this->interval,

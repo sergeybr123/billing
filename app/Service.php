@@ -11,6 +11,7 @@ class Service extends Model
         'name',
         'description',
         'discount',
+        'discount_option',
         'quantity',
         'price',
         'active',
@@ -23,6 +24,8 @@ class Service extends Model
     protected $dates = [
         'start_at',
         'end_at',
+        'created_at',
+        'updated_at',
         'deleted_at',
     ];
 }

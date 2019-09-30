@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Feature extends Model
 {
     protected $fillable = [
-        'code', 'name', 'description', 'interval', 'interval_count', 'sort_order', 'active'
+        'is_group',
+        'parent_id',
+        'code',
+        'route',
+        'name',
+        'description',
+        'interval',
+        'interval_count',
+        'sort_order',
+        'active'
     ];
 
     public function plans()

@@ -166,7 +166,7 @@ class RefController extends Controller
         $new_period_sub = Carbon::today()->addMonths($ref_invoice_plan->quantity);
         $new_period_sub_days = Carbon::today()->diff($new_period_sub)->days - 1;
 
-        if($last_bot_plan != $plan_invoice->bot_couny) {
+        if($last_bot_plan != $plan_invoice->bot_count) {
 
         }
         $bc = ($bot_count + $add_bot->quantity);
@@ -206,6 +206,13 @@ class RefController extends Controller
             return response()->json(['error' => 1]);
         }
         return $ref;
+    }
+
+    public function test_ref()
+    {
+        $plans = Plan::where('price', '>', 0.00)->where()->get();
+        dd($plans);
+//        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6, 8])
     }
 
     public function createInvoice(Request $request)

@@ -10,6 +10,7 @@ class Plan extends Model
         'code',
         'name',
         'discount',
+        'discount_option',
         'description',
         'price',
         'interval',
