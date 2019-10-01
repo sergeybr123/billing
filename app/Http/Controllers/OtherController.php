@@ -51,7 +51,11 @@ class OtherController extends Controller
 
     public function fillInvoiceOrders()
     {
-        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6])->where('active', true)->get();
+        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6, 7])->where('active', true)->get();
+        return response()->json(['subscribes' => $subscribes]);
+
+
+        /*---Переписать метод---*/
         $count = 0;
         foreach($subscribes as $subscribe) {
             $month = 0;

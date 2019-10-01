@@ -127,7 +127,7 @@ class DbController extends Controller
             $n_sb->user_id = $sb->user_id;
             $n_sb->plan_id = $sb->plan_id;
             $n_sb->interval = $sb->interval;
-            $n_sb->bot_count = $sb->bot_count;
+//            $n_sb->bot_count = $sb->bot_count;
             $n_sb->trial_ends_at = $sb->trial_ends_at;
             $n_sb->start_at = $sb->start_at;
             $n_sb->end_at = $sb->end_at;
