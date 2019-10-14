@@ -50,6 +50,7 @@ Route::middleware('auth.basic')->group(function () {
         Route::post('create-ref', 'RefController@create_ref_invoice');    // Создаем RefInvoice
         Route::post('create-ref-invoice-details', 'RefController@create_ref_invoice_detail');   // Добавляем к RefInvoice RefInvoiceDetail
         Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
+
     });
     Route::prefix('db')->group(function() {
         Route::get('insert-tables', 'DbController@insert_tables')->name('insert_tables');
@@ -64,6 +65,7 @@ Route::middleware('auth.basic')->group(function () {
         // Заполняем таблицу с деталями счета
         Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
         // В подписке заполнить поле с количеством ботов
-        Route::get('fiiBotCount', 'OtherController@fillBotCount');
+        Route::get('fillBotCount', 'OtherController@fillBotCount');
+        Route::get('create-ref-invoice', 'OtherController@create_ref_inv');
     });
 });

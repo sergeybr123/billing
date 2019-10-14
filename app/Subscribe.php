@@ -37,7 +37,7 @@ class Subscribe extends Model
 
     public function invoices()
     {
-        return $this->hasMany(Invoice::class, 'user_id', 'user_id');
+        return $this->hasMany(Invoice::class, 'user_id', 'user_id')->orderByDesc('id');
     }
 
     public function last_invoice()

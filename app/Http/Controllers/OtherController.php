@@ -49,10 +49,118 @@ class OtherController extends Controller
         return response()->json(['error' => 0]);
     }
 
+    public function create_ref_inv()
+    {
+        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6, 7])->where('active', true)/*->take(1)->with('invoices')*/->get();
+        foreach ($subscribes as $subscribe) {
+            $inv = $subscribe->invoices[0];
+//            $subscr_inv = Subscribe::findOrFail($subscribe->id)->invoices->where('paid', 1)->where('plan_id', '!=', null);
+//            $present_mount=0;
+//            $inv = $subscribe->invoices;
+//            $subscribe->last_invoice = $inv[0]->id;
+//            $subscribe->save();
+//
+//            $inv_index = 0;
+//
+//            //Считаем сроки
+//            $today = Carbon::today();
+//            $d_end =  new Carbon($subscribe->end_at);
+//            $d_end_sub =  new Carbon($subscribe->end_at);
+//            $d_start = new Carbon($subscribe->start_at);
+//            $sub_days = $d_end->diff($d_start)->days;
+//            $last_days = $d_end->diff($today)->days;
+//            $first_days = $d_start->diff($today)->days;
+//            return $inv[0];
+            //Создаем реф
+            if(!is_null($inv)) {
+                $ref = new RefInvoice();
+                $ref->invoice_id = $inv->id;
+                $ref->manager_id = $inv->manager_id ?? null;
+                $ref->user_id = $inv->user_id;
+                $ref->amount = $inv->amount;
+                $ref->type_id = $inv->type_id;
+                $ref->description = $inv->description;
+                $ref->save();
+
+                $ref_details = new RefInvoiceDetail();
+                $ref_details->ref_invoice_id = $ref->id;
+                $ref_details->type = 'plan';
+                $ref_details->save();
+            }
+
+////            foreach ($subscr_inv as $item) {
+////
+////            }
+////            return $d_start; // count($inv);
+//            for($i=0;$i<=count($inv);$i++) {
+////                $inv_item = $inv[$i];
+//                if($inv[$i]->price == 0) {
+//                    $present_mount += 1;
+//                }
+//                $inv_today_1 = Carbon::today();
+//                $inv_today_2 = Carbon::today();
+//                $inv_per_end = $inv_today_1->addMonths($inv[$i]->period);
+//                $inv_days = $inv_today_2->diff($inv_per_end)->days;
+//                return $inv_days;
+//                if($inv) {
+//
+//                }
+//            }
+
+
+
+
+
+        }
+//        return $inv;
+    }
+
     public function fillInvoiceOrders()
     {
-        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6, 7])->where('active', true)->get();
-        return response()->json(['subscribes' => $subscribes]);
+        $subscribes = Subscribe::whereIn('plan_id', [4, 5, 6, 7])->where('active', true)->take(1)/*->with('invoices')*/->get();
+        $sub_arr = [];
+        foreach ($subscribes as $subscribe) {
+
+            $subscr_inv = Subscribe::findOrFail($subscribe->id)->invoices->where('paid', 1)->where('plan_id', '!=', null);
+//            return $subscr_item;
+            $today = Carbon::today();
+            $d_end =  new Carbon($subscribe->end_at);
+            $d_start = new Carbon($subscribe->start_at);
+            $sub_days = $d_end->diff($d_start)->days;
+            $last_days = $d_end->diff($today)->days;
+            $first_days = $d_start->diff($today)->days;
+
+            if($last_days < 30) {
+
+            }
+
+//            if($last_days <= 90) {
+//                array_push($sub_arr, $subscribe);
+//            }
+
+            $invoices = $subscribe->invoices/*->orderBy('id', 'desc')->get()*/;
+//            return response()->json([$invoices]);
+            $days_arr = [];
+            $i_count = 0;
+            $i_count_paid = 0;
+            $i_count_price = 0;
+            foreach($invoices as $invoice) {
+                $i_count++;
+                if($invoice->paid == true) {
+                    $i_count_paid++;
+                    if ($invoice->price > 0.00) {
+                        $i_count_price++;
+                        $i_per_start = Carbon::today();
+                        $i_per_end = Carbon::today()->addMonths($invoice->period);
+                        $per_days = $i_per_start->diff($i_per_end)->days;
+                        array_push($days_arr, $per_days);
+                    } else {
+
+                    }
+                }
+            }
+        }
+        return response()->json([$i_count, $i_count_paid, $i_count_price, 'count' => count($invoices), 'sub_days' => $sub_days, 'first_days' => $first_days, 'last_days' => $last_days, 'd_start' => $d_start->toDateTimeString(), 'd_end' => $d_end->toDateTimeString(), 'invoices' => $invoices]);
 
 
         /*---Переписать метод---*/
@@ -91,8 +199,7 @@ class OtherController extends Controller
             } else {
                 $period = $invoice->period + $month;
             }
-            $d_start->subMonths($period);
-            $sub_days = $d_end->diff($d_start)->days;
+            $d_start->subMonths($period);            $sub_days = $d_end->diff($d_start)->days;
 //            return $invoice->user_id;
             $ref_details->quantity = $sub_days;
             $ref_details->discount = $invoice->period >= 12 ? $invoice->plan->discount : 0;
