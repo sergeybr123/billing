@@ -10,7 +10,7 @@ class Invoice extends Model
 //    protected $connection = 'mysql';
 //    protected $table = 'invoices';
 
-//    use SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
         'manager_id',

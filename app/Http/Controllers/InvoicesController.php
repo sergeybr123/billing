@@ -20,7 +20,7 @@ class InvoicesController extends Controller
      */
     public function index()
     {
-        return InvoiceResource::collection(InvoiceModel::whereNull('deleted_at')->orderBy('id', 'desc')->paginate(20));//InvoiceModel::with('types')->orderBy('id', 'desc')->paginate(30));
+        return InvoiceResource::collection(InvoiceModel::orderBy('id', 'desc')->paginate(20));//InvoiceModel::with('types')->orderBy('id', 'desc')->paginate(30));
     }
 
     /**
