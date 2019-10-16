@@ -33,6 +33,8 @@ class Invoice extends JsonResource
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,
+            'plan' => $this->plan,
+            'service' => $this->service,
             'orders' => $this->orders,
         ];
     }

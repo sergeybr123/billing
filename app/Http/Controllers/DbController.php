@@ -181,4 +181,12 @@ class DbController extends Controller
         }
 
     }
+
+    public function update_invoice_created()
+    {
+        $invoices = DB::connection('old')->table('invoices')->get();
+        foreach ($invoices as $in) {
+
+        }
+    }
 }
