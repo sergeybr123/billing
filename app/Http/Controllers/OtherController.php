@@ -260,5 +260,21 @@ class OtherController extends Controller
         }
     }
 
+    public function create_trial($plan_id)
+    {
+        $plan = Plan::findOrFail($plan_id);
+        $plan->code = 'trial';
+        $plan->name = 'Trial';
+        $plan->discount = 0;
+        $plan->price = 0.00;
+        $plan->interval = 'days';
+        $plan->sort_order = 0;
+        $plan->on_show = 0;
+        $plan->active = true;
+        $plan->bot_count = 1;
+        $plan->on_show = 0;
+        $plan->on_show = 0;
+    }
+
 
 }
