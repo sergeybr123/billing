@@ -246,4 +246,9 @@ class SubscribeController extends Controller
         $subscribe->save();
         return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);
     }
+
+    public function extend_subscribe($user_id, $plan_id, $period)
+    {
+
+    }
 }
