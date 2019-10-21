@@ -253,11 +253,14 @@ class OtherController extends Controller
 
     public function fillBotCount()
     {
-        $subscribes = Subscribe::all();
+        $subscribes = Subscribe::get();
+        $count_bot = 0;
         foreach ($subscribes as $subscribe) {
-            $subscribe->bot_count = $subscribe->plans->bot_count;
+            $count_bot++;
+            $subscribe->bot_count = $subscribe->plan->bot_count;
             $subscribe->save();
         }
+        return $count_bot;
     }
 
     public function create_trial($plan_id)
@@ -275,6 +278,16 @@ class OtherController extends Controller
         $plan->on_show = 0;
         $plan->on_show = 0;
     }
+
+    public function rename_test_trial()
+    {
+        $plan = Plan::where(['code', 'test'])->first();
+        $plan->code = 'trial';
+        $plan->name = 'Trial';
+        $plan->save();
+    }
+
+
 
 
 }

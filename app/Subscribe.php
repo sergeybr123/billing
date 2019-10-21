@@ -25,9 +25,9 @@ class Subscribe extends Model
         'deleted_at',
     ];
 
-    public function plans()
+    public function plan()
     {
-        return $this->belongsTo('App\Plan', 'plan_id', 'id');
+        return $this->belongsTo(Plan::class, 'plan_id', 'id');
     }
 
     public function additionals()

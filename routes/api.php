@@ -57,6 +57,7 @@ Route::middleware('auth.basic')->group(function () {
     });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
+        Route::get('rename-test-trial', 'OtherController@rename_test_trial'); // Переименование пробного в триальный тарифный план
         /*--------Сделать счета не активными--------*/
         Route::get('set-not-active', 'OtherController@setNotActive');
         Route::get('set-completed/{id}', 'InvoicesController@completed'); // ставим статус completed

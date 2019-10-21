@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\AdditionalSubscribesType;
 use App\Plan;
 use App\RefInvoiceDetail;
 use App\Service;
@@ -25,6 +24,7 @@ class RefController extends Controller
         $ref->type_id = $request->type_id;
         $ref->save();
         return new RefResource(RefInvoice::findOrFail($ref->id));
+
     }
 
     public function create_ref_invoice_detail(Request $request)
