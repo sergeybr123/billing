@@ -30,7 +30,7 @@ class Subscribe extends JsonResource
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->toDateTimeString() : null,
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,
             'additional' => $this->additionals,
-            'plan' => $this->plans,
+            'plan' => $this->plan,
         ];
     }
 }

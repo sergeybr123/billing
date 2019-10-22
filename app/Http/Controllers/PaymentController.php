@@ -186,62 +186,15 @@ class PaymentController extends Controller
 
                     /*------------Если продление подписки-------------*/
                     if ($invoice->type_id == 1) {
-                        if (Carbon::parse($subscribe->end_at) < Carbon::parse($request->DateTime)) {
-                            $subscribe->start_at = Carbon::now();
-                            if ($interval == 'month') {
-//                            $dt = Carbon::now()->addMonths($invoice->period);
-                                if ($invoice->period != null) {
-                                    $dt = Carbon::now()->addMonths($invoice->period);
-                                } else {
-                                    $dt = Carbon::now()->addMonth();
-                                }
-                            }
-//                            if($interval == 'year') {
-//                                $dt = Carbon::now()->addYear();
-//                            }
-                        } else {
-                            if ($interval == 'month') {
-                                if ($invoice->period != null) {
-                                    $dt = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
-                                } else {
-                                    $dt = Carbon::parse($subscribe->end_at)->addMonth();
-                                }
-                            }
-//                            if($interval == 'year') {
-//                                $dt = Carbon::parse($subscribe->end_at)->addYear();
-//                            }
-                        }
-                        $subscribe->end_at = $dt;
-                        $subscribe->active = true;
-//                    $subscribe->save();
                     }
                     /*----------------Если переподписка на новый тариф-------------------*/
                     if ($invoice->type_id == 2) {
-                        if ($interval == 'month') {
-                            if ($invoice->period != null) {
-                                $dt = Carbon::now()->addMonths($invoice->period);
-                            } else {
-                                $dt = Carbon::now()->addMonth();
-                            }
-                        }
-//                        if($interval == 'year') {
-//                            $dt = Carbon::now()->addYear();
-//                        }
-//                        if($subscribe->plan_id == 8 && $plan->id != 8) {
-//
-//                        }
                         $subscribe->plan_id = $plan->id;
-                        if($invoice->period < 12) {
-                            $subscribe->interval = "month";
-                        } else {
-                            $subscribe->interval = "year";
-                        }
-                        $subscribe->start_at = Carbon::now();
-                        $subscribe->end_at = $dt;
-                        $subscribe->active = true;
-//                    $subscribe->save();
                     }
+                    $subscribe->start_at = Carbon::today();
+                    $subscribe->end_at = Carbon::today()->addMonths($invoice->period);
                     /*-----Сохраняем подписку------*/
+                    $subscribe->active = true;
                     $subscribe->last_invoice = $invoice->id;
                     $subscribe->save();
                 }
@@ -289,16 +242,16 @@ class PaymentController extends Controller
                 // Продление
                 $subscribe->plan_id = $plan->id;
                 if ($invoice->type_id == 1) {
-                    if ($subscribe->end_at < $at_date) {
-                        $subscribe->start_at = Carbon::parse($at_date);
-                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
-                    }
-                    if ($plan->interval == 'month') {
-                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
-                    }
-//                    else {
-//                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear();
+//                    if ($subscribe->end_at < $at_date) {
+//                        $subscribe->start_at = Carbon::parse($at_date);
+//                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
 //                    }
+//                    if ($plan->interval == 'month') {
+//                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+//                    }
+////                    else {
+////                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear();
+////                    }
                 } // Подписка
                 elseif ($invoice->type_id == 2) {
                     $subscribe->start_at = Carbon::parse($at_date)->format('Y-m-d');

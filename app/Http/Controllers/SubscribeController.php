@@ -22,7 +22,7 @@ class SubscribeController extends Controller
      */
     public function index()
     {
-        return new SubscribesCollection(Subscribe::orderBy('id', 'desc')->with('plans')->paginate(30));//paginate(30));
+        return SubscribeResource::orderBy('id', 'desc')->with('plans')->paginate(30);//paginate(30));
     }
 
     /**
