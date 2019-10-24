@@ -25,6 +25,7 @@ class Plan extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'interval' => $this->interval,
+            'period' => $this->period,
             'trial_period_days' => $this->trial_period_days,
             'sort_order' => $this->sort_order,
             'on_show' => $this->on_show,

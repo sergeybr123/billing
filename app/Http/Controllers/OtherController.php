@@ -281,7 +281,7 @@ class OtherController extends Controller
 
     public function rename_test_trial()
     {
-        $plan = Plan::where(['code', 'test'])->first();
+        $plan = Plan::where(['code' => 'test'])->first();
         $plan->code = 'trial';
         $plan->name = 'Trial';
         $plan->save();

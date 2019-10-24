@@ -32,6 +32,7 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('ext-subscribe/{id}', 'SubscribeController@extSubscribe');                                               // Продление подписки пользователя по его ИД
     Route::get('set-free/{id}', 'SubscribeController@setFreeSubscribe');                                                // Даем бесплатную подписку
+    Route::get('set-trial/{id}', 'SubscribeController@setTrial');                                                       // Даем Trial подписку
 
     Route::get('invoice-count', 'InvoicesController@countInvoice');                                                     // Возврат integer числа счетов
 
@@ -43,6 +44,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::match(['get', 'post'], 'pay-with-day', 'PaymentController@payWithDay');                                      // Подтверждение платежа от менеджера
 
     Route::get('set-not-active', 'ActivateController@set_not_active');                                                  // Меняем статус у неактивных подписок
+    Route::get('set-free-not-active', 'ActivateController@set_free_not_active');                                        // Меняем подписку у неактивных подписок
     Route::get('end-active/{day}', 'ActivateController@getSubscribeEndOfDay');                                          // Получаем список подписок которые завершатся через *n дней
 
     /*RefInvoice*/

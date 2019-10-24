@@ -20,7 +20,7 @@ class InvoicesController extends Controller
      */
     public function index()
     {
-        return InvoiceModel::orderBy('id', 'desc')->paginate(20);
+        return InvoiceResource::collection(InvoiceModel::orderBy('id', 'desc')->paginate(20));
     }
 
     /**

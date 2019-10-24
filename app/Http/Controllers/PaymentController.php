@@ -13,6 +13,7 @@ use App\Plan;
 use App\User;
 use App\AdditionalSubscribesType;
 use \App\Http\Resources\Invoice as InvoiceResource;
+use App\Http\Controllers\ActivateController as AC;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -198,6 +199,7 @@ class PaymentController extends Controller
                     $subscribe->last_invoice = $invoice->id;
                     $subscribe->save();
                 }
+                app()->call('App\Http\Controllers\ActivateController@writeSubscribeHistory', [$subscribe->id, $plan->id, $invoice->period]);
                 /*-----Записываем код для возврата GetChat------*/
                 $code = 0;
             }
@@ -265,7 +267,7 @@ class PaymentController extends Controller
                 $subscribe->active = 1;
                 $subscribe->save();
             }
-
+            app()->call('App\Http\Controllers\ActivateController@writeSubscribeHistory', [$subscribe->id, $plan->id, $invoice->period]);
             return response()->json(['error' => 0, 'message' => $invoice]);
         } else {
             return response()->json(['error' => 1]);

@@ -120,21 +120,23 @@ class SubscribeController extends Controller
     }
 
     // Бесплатная подписка для регистрации пользователя
-    public function free($id)
+    public function setTrial($id)
     {
-        $plan = Plan::where('code', 'free')->first();
+        $plan = Plan::where('code', 'trial')->first();
         $subscribe = Subscribe::where('user_id', $id)->first();
         if($subscribe == null) {
             $us_sub = Subscribe::create([
                     'user_id' => $id,
                     'plan_id' => $plan->id,
                     'interval' => $plan->interval,
+                    'term' => $plan->period.' days',
                     'quantity_bot' => $plan->bot_count,
-                    'start_at' => Carbon::now(),
+                    'start_at' => Carbon::today(),
+                    'end_at' => Carbon::today()->addDays($plan->period),
                     'active' => 1,
                 ]);
             if($us_sub) {
-                return ['error' => 0, 'message' => 'Пользователь подписан на бесплатный пакет'];
+                return ['error' => 0, 'message' => 'Пользователь подписан на пакет Trial'];
             } else {
                 return ['error' => 1, 'message' => 'Ошибка подписки пользователя'];
             }

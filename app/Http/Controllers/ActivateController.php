@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\SubscriptionHistory;
 use Illuminate\Http\Request;
 use App\Invoice;
 use App\Subscribe;
@@ -98,6 +99,47 @@ class ActivateController extends Controller
         } catch (Throwable $t) {
             return response()->json(['error' => 1, 'message' => $t]);
         }
+    }
+
+    // Ставим план Free у кого закончилась подлписки от 24.10.2019
+    public function set_free_not_active()
+    {
+        $subscribes = Subscribe::where('end_at', '<=', Carbon::today()->subDays(1))->where('active', true)->get();
+        $free = Plan::where('code', 'free')->first();
+        foreach ($subscribes as $item) {
+            $item->plan_id = $free->id;
+            $item->interval = 'unlimited';
+            $item->term = 'unlimited';
+            $item->start_at = Carbon::today();
+            $item->end_at = Carbon::today()->addDays($free->period);
+            $item->active = true;
+            $item->save();
+            // Записываем историю
+            $this->writeSubscribeHistory($item->id, Carbon::today()->addDays($free->period));
+        }
+        try {
+            return response()->json(['error' => 0, 'subscribes' => $subscribes]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    // Добавление записи в историю подписки от 24.10.2019
+    public function writeSubscribeHistory($subscribe_id, $plan_id, $term = 0)
+    {
+        $plan = Plan::findOrFail($plan_id);
+
+        $hi = new SubscriptionHistory();
+        $hi->subscribe_id = $subscribe_id;
+        $hi->type = 'App\\Plan';
+        $hi->plan_id = $plan->id;
+        $hi->start = Carbon::today();
+        if($plan->period > 0) {
+            $hi->end = Carbon::today()->addDays($term);
+        } else {
+            $hi->end = null;
+        }
+        $hi->save();
     }
 
 }

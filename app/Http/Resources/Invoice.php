@@ -20,7 +20,7 @@ class Invoice extends JsonResource
             'manager_id' => $this->manager_id,
             'user_id' => $this->user_id,
             'amount' => $this->amount,
-            'type' => $this->types,
+            'types' => $this->types,
             'plan_id' => $this->plan_id,
             'period' => $this->period,
             'service_id' => $this->service_id,
