@@ -120,30 +120,30 @@ class SubscribeController extends Controller
     }
 
     // Бесплатная подписка для регистрации пользователя
-    public function setTrial($id)
-    {
-        $plan = Plan::where('code', 'trial')->first();
-        $subscribe = Subscribe::where('user_id', $id)->first();
-        if($subscribe == null) {
-            $us_sub = Subscribe::create([
-                    'user_id' => $id,
-                    'plan_id' => $plan->id,
-                    'interval' => $plan->interval,
-                    'term' => $plan->period.' days',
-                    'quantity_bot' => $plan->bot_count,
-                    'start_at' => Carbon::today(),
-                    'end_at' => Carbon::today()->addDays($plan->period),
-                    'active' => 1,
-                ]);
-            if($us_sub) {
-                return ['error' => 0, 'message' => 'Пользователь подписан на пакет Trial'];
-            } else {
-                return ['error' => 1, 'message' => 'Ошибка подписки пользователя'];
-            }
-        } else {
-            return ['error' => 1, 'message' => 'Данный пользователь уже подписан'];
-        }
-    }
+//    public function setTrial($id)
+//    {
+//        $plan = Plan::where('code', 'trial')->first();
+//        $subscribe = Subscribe::where('user_id', $id)->first();
+//        if($subscribe == null) {
+//            $us_sub = Subscribe::create([
+//                    'user_id' => $id,
+//                    'plan_id' => $plan->id,
+//                    'interval' => $plan->interval,
+//                    'term' => $plan->period.' days',
+//                    'quantity_bot' => $plan->bot_count,
+//                    'start_at' => Carbon::today(),
+//                    'end_at' => Carbon::today()->addDays($plan->period),
+//                    'active' => 1,
+//                ]);
+//            if($us_sub) {
+//                return ['error' => 0, 'message' => 'Пользователь подписан на пакет Trial'];
+//            } else {
+//                return ['error' => 1, 'message' => 'Ошибка подписки пользователя'];
+//            }
+//        } else {
+//            return ['error' => 1, 'message' => 'Данный пользователь уже подписан'];
+//        }
+//    }
 
     // Подписка на пакет Unlimited
     public function unlimited($id)
@@ -244,6 +244,22 @@ class SubscribeController extends Controller
         $subscribe->interval = $free->interval;
         $subscribe->bot_count = $free->bot_count;
         $subscribe->start_at = Carbon::now();
+        $subscribe->active = 1;
+        $subscribe->save();
+        return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);
+    }
+
+    public function setTrialSubscribe($user_id)
+    {
+        $plan = Plan::where('code', 'trial')->first();
+        $subscribe = new Subscribe();
+        $subscribe->user_id = $user_id;
+        $subscribe->plan_id = $plan->id;
+        $subscribe->interval = $plan->interval;
+        $subscribe->term = $plan->period.' days';
+        $subscribe->bot_count = $plan->bot_count;
+        $subscribe->start_at = Carbon::today();
+        $subscribe->start_at = Carbon::today()->addDays($plan->period);
         $subscribe->active = 1;
         $subscribe->save();
         return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);

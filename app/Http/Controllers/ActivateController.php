@@ -104,18 +104,18 @@ class ActivateController extends Controller
     // Ставим план Free у кого закончилась подлписки от 24.10.2019
     public function set_free_not_active()
     {
-        $subscribes = Subscribe::where('end_at', '<=', Carbon::today()->subDays(1))->where('active', true)->get();
+        $subscribes = Subscribe::where('end_at', '<=', Carbon::today()->subDay())->where('active', 1)->get();
         $free = Plan::where('code', 'free')->first();
         foreach ($subscribes as $item) {
             $item->plan_id = $free->id;
             $item->interval = 'unlimited';
             $item->term = 'unlimited';
             $item->start_at = Carbon::today();
-            $item->end_at = Carbon::today()->addDays($free->period);
+            $item->end_at = null;
             $item->active = true;
             $item->save();
             // Записываем историю
-            $this->writeSubscribeHistory($item->id, Carbon::today()->addDays($free->period));
+            $this->writeSubscribeHistory($item->id, $free->id);
         }
         try {
             return response()->json(['error' => 0, 'subscribes' => $subscribes]);

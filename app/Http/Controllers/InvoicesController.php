@@ -44,7 +44,7 @@ class InvoicesController extends Controller
 //        $plan_id = $request->plan;
 //
 //        $bot_count = $request->bot_count;
-        $user = User::where('user_id', $request->user_id)->first();
+        $user = User::findOrFail($request->user_id);
         $subscribe = Subscribe::where('user_id', $request->user_id)->first();
         $plan = Plan::where('id', $subscribe->plan_id)->first();
 //        $bot_create = $request->bot_create;
@@ -68,7 +68,7 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-        return new InvoiceResource(InvoiceModel::find($id));
+        return new InvoiceResource(InvoiceModel::findOrFail($id));
     }
 
     /**

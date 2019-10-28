@@ -32,7 +32,7 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('ext-subscribe/{id}', 'SubscribeController@extSubscribe');                                               // Продление подписки пользователя по его ИД
     Route::get('set-free/{id}', 'SubscribeController@setFreeSubscribe');                                                // Даем бесплатную подписку
-    Route::get('set-trial/{id}', 'SubscribeController@setTrial');                                                       // Даем Trial подписку
+    Route::get('set-trial/{id}', 'SubscribeController@setTrialSubscribe');                                                       // Даем Trial подписку
 
     Route::get('invoice-count', 'InvoicesController@countInvoice');                                                     // Возврат integer числа счетов
 
