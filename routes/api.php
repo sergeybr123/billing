@@ -56,6 +56,7 @@ Route::middleware('auth.basic')->group(function () {
     });
     Route::prefix('db')->group(function() {
         Route::get('insert-tables', 'DbController@insert_tables')->name('insert_tables');
+        Route::get('update-created', 'DbController@update_invoice_created')->name('update_invoice_created');
     });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {

@@ -184,9 +184,65 @@ class DbController extends Controller
 
     public function update_invoice_created()
     {
+        /*$plans = DB::connection('old')->table('plans')->get();
+        foreach ($plans as $plan) {
+            $item = Plan::findOrFail($plan->id);
+            $item->created_at = $plan->created_at;
+            $item->save();
+        }
+        $features = DB::connection('old')->table('features')->get();
+        foreach ($features as $feature) {
+            $item = Feature::findOrFail($feature->id);
+            $item->created_at = $feature->created_at;
+            $item->save();
+        }
+        $plans_features = DB::connection('old')->table('plans_features')->get();
+        foreach ($plans_features as $pf) {
+            $item = PlansFeature::findOrFail($pf->id);
+            $item->created_at = $pf->created_at;
+            $item->save();
+        }
+        $type_invoices = DB::connection('old')->table('type_invoices')->get();
+        foreach ($type_invoices as $ti) {
+            $item = TypeInvoice::findOrFail($ti->id);
+            $item->created_at = $ti->created_at;
+            $item->save();
+        }
+        $additional_subscribes = DB::connection('old')->table('additional_subscribes')->get();
+        foreach ($additional_subscribes as $as) {
+            $item = AdditionalSubscribe::findOrFail($as->id);
+            $item->created_at = $as->created_at;
+            $item->save();
+        }
+        $additional_subscribes_types = DB::connection('old')->table('additional_subscribes_types')->get();
+        foreach ($additional_subscribes_types as $ast) {
+            $item = AdditionalSubscribesType::findOrFail($ast->id);
+            $item->created_at = $ast->created_at;
+            $item->save();
+        }
+        $services = DB::connection('old')->table('services')->get();
+        foreach ($services as $s) {
+            $item = Service::findOrFail($s->id);
+            $item->created_at = $s->created_at;
+            $item->save();
+        }
+        $subscribes = DB::connection('old')->table('subscribes')->get();
+        foreach ($subscribes as $sb) {
+            $item = Subscribe::findOrFail($sb->id);
+            $item->created_at = $sb->created_at;
+            $item->save();
+        }*/
         $invoices = DB::connection('old')->table('invoices')->get();
         foreach ($invoices as $in) {
-
+            $n_inv = Invoice::findOrFail($in->id);
+            $n_inv->created_at = $in->created_at;
+            $n_inv->save();
+        }
+        $c_p_logs = DB::connection('old')->table('c_p_logs')->get();
+        foreach ($c_p_logs as $cpl) {
+            $n_inv = CPLog::findOrFail($cpl->id);
+            $n_inv->created_at = $cpl->created_at;
+            $n_inv->save();
         }
     }
 }
