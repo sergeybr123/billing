@@ -38,6 +38,7 @@ class DbController extends Controller
             $n_plan->on_show = $plan->on_show;
             $n_plan->active = $plan->active;
             $n_plan->bot_count = $plan->bot_count;
+            $n_plan->created_at = $plan->created_at;
             $n_plan->save();
         }
         $features = DB::connection('old')->table('features')->get();
@@ -56,6 +57,7 @@ class DbController extends Controller
             $n_feat->interval_count = $feature->interval_count;
             $n_feat->sort_order = $feature->sort_order;
             $n_feat->active = $feature->active;
+            $n_feat->created_at = $feature->created_at;
             $n_feat->save();
         }
         $plans_features = DB::connection('old')->table('plans_features')->get();
@@ -66,6 +68,7 @@ class DbController extends Controller
             $n_pf->id = $pf->id;
             $n_pf->plan_id = $pf->plan_id;
             $n_pf->feature_id = $pf->feature_id;
+            $n_pf->created_at = $pf->created_at;
             $n_pf->save();
         }
         $type_invoices = DB::connection('old')->table('type_invoices')->get();
@@ -75,6 +78,7 @@ class DbController extends Controller
             $n_ti = new TypeInvoice();
             $n_ti->id = $ti->id;
             $n_ti->name = $ti->name;
+            $n_ti->created_at = $ti->created_at;
             $n_ti->save();
         }
         $additional_subscribes = DB::connection('old')->table('additional_subscribes')->get();
@@ -90,6 +94,7 @@ class DbController extends Controller
             $n_as->trial_ends_at = $as->trial_ends_at;
             $n_as->start_at = $as->start_at;
             $n_as->end_at = $as->end_at;
+            $n_as->created_at = $as->created_at;
             $n_as->save();
         }
         $additional_subscribes_types = DB::connection('old')->table('additional_subscribes_types')->get();
@@ -100,6 +105,7 @@ class DbController extends Controller
             $n_ast->id = $ast->id;
             $n_ast->name = $ast->name;
             $n_ast->price = $ast->price;
+            $n_ast->created_at = $ast->created_at;
             $n_ast->save();
         }
         $services = DB::connection('old')->table('services')->get();
@@ -117,6 +123,7 @@ class DbController extends Controller
 //            $n_s->quantity = $s->quantity;
             $n_s->price = $s->price;
             $n_s->active = $s->active;
+            $n_s->created_at = $s->created_at;
             $n_s->save();
         }
         $subscribes = DB::connection('old')->table('subscribes')->get();
@@ -134,6 +141,7 @@ class DbController extends Controller
             $n_sb->end_at = $sb->end_at;
             $n_sb->active = $sb->active;
             $n_sb->last_invoice = $sb->last_invoice;
+            $n_sb->created_at = $sb->created_at;
             $n_sb->save();
         }
         $invoices = DB::connection('old')->table('invoices')->get();
@@ -155,6 +163,7 @@ class DbController extends Controller
             $n_in->options = $in->options;
             $n_in->usages = $in->usages;
             $n_in->status = $in->status;
+            $n_in->created_at = $in->created_at;
             $n_in->save();
         }
         $c_p_logs = DB::connection('old')->table('c_p_logs')->get();
@@ -173,6 +182,7 @@ class DbController extends Controller
             $n_cpl->email = $cpl->email;
             $n_cpl->issuer = $cpl->issuer;
             $n_cpl->token = $cpl->token;
+            $n_cpl->created_at = $cpl->created_at;
             $n_cpl->save();
         }
         try {
@@ -252,6 +262,7 @@ class DbController extends Controller
         DB::table('services')->delete();
         DB::statement('ALTER TABLE plans AUTO_INCREMENT = 1;');
         DB::table('services')->insert([
+            'id' => 1,
             'type' => 'service',
             'name' => 'Разработка авточата',
             'discount' => 0,
@@ -260,6 +271,7 @@ class DbController extends Controller
             'updated_at' => Carbon::now(),
         ]);
         DB::table('services')->insert([
+            'id' => 2,
             'type' => 'bot',
             'name' => 'Дополнительный авточата',
             'discount' => 0,
@@ -269,6 +281,7 @@ class DbController extends Controller
             'updated_at' => Carbon::now(),
         ]);
         DB::table('services')->insert([
+            'id' => 3,
             'type' => 'bonus',
             'name' => 'Бесплатно месяц',
             'discount' => 0,

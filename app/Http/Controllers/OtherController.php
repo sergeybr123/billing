@@ -259,7 +259,8 @@ class OtherController extends Controller
         $count_bot = 0;
         foreach ($subscribes as $subscribe) {
             $count_bot++;
-            $subscribe->bot_count = $subscribe->plan->bot_count;
+            $plan = Plan::findOrFail($subscribe->plan_id);
+            $subscribe->bot_count = $plan->bot_count;
             $subscribe->save();
         }
         return $count_bot;
