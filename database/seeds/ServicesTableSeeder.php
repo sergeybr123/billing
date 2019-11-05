@@ -13,6 +13,8 @@ class ServicesTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('services')->delete();
+        DB::statement('ALTER TABLE plans AUTO_INCREMENT = 1;');
         DB::table('services')->insert([
             'name' => 'Разработка авточата',
             'discount' => 0,

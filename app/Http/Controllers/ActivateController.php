@@ -114,8 +114,16 @@ class ActivateController extends Controller
             $item->end_at = null;
             $item->active = true;
             $item->save();
+
             // Записываем историю
-            $this->writeSubscribeHistory($item->id, $free->id);
+            //$this->writeSubscribeHistory($item->id, $free->id);
+            $hi = new SubscriptionHistory();
+            $hi->subscribe_id = $item->id;
+            $hi->type = 'App\\Plan';
+            $hi->plan_id = $free->id;
+            $hi->start = Carbon::today();
+            $hi->end = null;
+            $hi->save();
         }
         try {
             return response()->json(['error' => 0, 'subscribes' => $subscribes]);

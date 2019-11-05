@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Plan;
+use App\Plan;
 use App\Invoice;
 use App\Subscribe;
 use App\User;

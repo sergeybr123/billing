@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\AdditionalSubscribesType;
-use App\Http\Resources\PlanFeature;
+//use App\Http\Resources\PlanFeature;
 use App\InvoiceOrder;
+use App\PlansFeature;
 use App\RefInvoice;
 use App\RefInvoiceDetail;
 use App\Service;
@@ -304,23 +305,25 @@ class OtherController extends Controller
     public function create_feature_trial()
     {
         $ent = Plan::where('code', 'enterprise')->first();
-
         $trial  = Plan::where('code', 'trial')->first();
         if($ent) {
-            $feateres = PlanFeature::where('plan_id', $ent->id)->get();
+            $feateres = PlansFeature::where('plan_id', $ent->id)->get();
         }
-
-        if(!$trial) {
-
-        }
-
         if($trial) {
             if($feateres) {
                 foreach ($feateres as $item) {
-
+                    $pf = new PlansFeature();
+                    $pf->plan_id = $trial->id;
+                    $pf->feature_id = $item->feature_id;
+                    $pf->save();
                 }
             }
         }
+    }
+
+    public function create_ref_for_paid()
+    {
+
     }
 
 

@@ -12,6 +12,7 @@ use App\PlansFeature;
 use App\Service;
 use App\Subscribe;
 use App\TypeInvoice;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -244,5 +245,36 @@ class DbController extends Controller
             $n_inv->created_at = $cpl->created_at;
             $n_inv->save();
         }
+    }
+
+    public function insert_service()
+    {
+        DB::table('services')->delete();
+        DB::statement('ALTER TABLE plans AUTO_INCREMENT = 1;');
+        DB::table('services')->insert([
+            'type' => 'service',
+            'name' => 'Разработка авточата',
+            'discount' => 0,
+            'price' => 15000,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        DB::table('services')->insert([
+            'type' => 'bot',
+            'name' => 'Дополнительный авточата',
+            'discount' => 0,
+//            'discount_option' => ['type' => 'plan', 'value' => 'discount'],
+            'price' => 500,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        DB::table('services')->insert([
+            'type' => 'bonus',
+            'name' => 'Бесплатно месяц',
+            'discount' => 0,
+            'price' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }

@@ -57,6 +57,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::prefix('db')->group(function() {
         Route::get('insert-tables', 'DbController@insert_tables')->name('insert_tables');
         Route::get('update-created', 'DbController@update_invoice_created')->name('update_invoice_created');
+        Route::get('insert-service', 'DbController@insert_service')->name('insert_service');
     });
     /*--------Для других нужд--------*/
     Route::prefix('other')->group(function() {
@@ -70,6 +71,6 @@ Route::middleware('auth.basic')->group(function () {
         Route::get('fillInvoiceOrders', 'OtherController@fillInvoiceOrders');
         // В подписке заполнить поле с количеством ботов
         Route::get('fillBotCount', 'OtherController@fillBotCount');
-        Route::get('create-ref-invoice', 'OtherController@create_ref_inv');
+        Route::get('create-feature-trial', 'OtherController@create_feature_trial');
     });
 });
