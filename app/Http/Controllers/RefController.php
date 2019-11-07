@@ -129,7 +129,7 @@ class RefController extends Controller
         $last_bot_plan = 0;
 
         // Если подписка пакета платная
-        if($plan_sub->price > 0.00 && $subscribe->active == true) {
+        if($plan_sub->price > 0.00 && $subscribe->active) {
             $last_plan = Invoice::findOrFail($subscribe->last_invoice)->ref_invoice->details->where('type', 'plan')->first(); // Получаем счет на предыдущую оплату тарифного плана
             $last_bot = Invoice::findOrFail($subscribe->last_invoice)->ref_invoice->details->where('type', 'bot')->first(); // Получаем счет на предыдущую оплату тарифного плана
             //выбираем количество автчатов свыше подписки
