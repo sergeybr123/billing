@@ -23,6 +23,7 @@ class Subscribe extends JsonResource
             'term' => $this->term,
             'bot_count' => $this->bot_count,
             'trial_ends_at' => $this->trial_ends_at ? Carbon::parse($this->trial_ends_at)->toDateTimeString() : null,
+            'start_subscribe' => $this->start_subscribe ? Carbon::parse($this->start_subscribe)->toDateTimeString() : null,
             'start_at' => $this->start_at ? Carbon::parse($this->start_at)->toDateTimeString() : null,
             'end_at' => $this->end_at ? Carbon::parse($this->end_at)->toDateTimeString() : null,
             'active' => $this->active,

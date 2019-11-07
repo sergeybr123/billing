@@ -13,8 +13,8 @@ class AddStartDateSubscribeInvoice extends Migration
      */
     public function up()
     {
-        Schema::table('subscribes', function (Blueprint $table) {
-            $table->date('start_subscribe')->after('trial_ends_at')->nullable();
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->timestamp('start_subscribe')->after('period')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddStartDateSubscribeInvoice extends Migration
      */
     public function down()
     {
-        Schema::table('subscribes', function (Blueprint $table) {
+        Schema::table('invoices', function (Blueprint $table) {
             $table->dropColumn('start_subscribe');
         });
     }

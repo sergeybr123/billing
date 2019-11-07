@@ -36,9 +36,10 @@ Route::middleware('auth.basic')->group(function () {
 
     Route::get('invoice-count', 'InvoicesController@countInvoice');                                                     // Возврат integer числа счетов
 
-    //Route::resource('pays', 'PaymentController');                                                                   // Обработка ответа от CloudPayment
+    //Route::resource('pays', 'PaymentController');                                                                                // Обработка ответа от CloudPayment
 
     Route::post('activate', 'ActivateController@activate');                                                             // Ставить оплачено и активировать подписку по данному чеку
+    Route::post('subscribe-activate', 'ActivateController@subscribe_activate');                                         // Активировать подписку по отложенной дате
 
     Route::match(['get', 'post'], 'pay', 'PaymentController@pays');                                                     // Обработка ответа от CloudPayment
     Route::match(['get', 'post'], 'pay-with-day', 'PaymentController@payWithDay');                                      // Подтверждение платежа от менеджера
@@ -74,3 +75,13 @@ Route::middleware('auth.basic')->group(function () {
         Route::get('create-feature-trial', 'OtherController@create_feature_trial');
     });
 });
+
+
+// Пользователь выбирает тариф, срок, создаем реф, считаем
+
+/*
+ * менеджер выбирает тариф, срок, считаем реф
+ * менеджер выбирает количество авточатов, показываем ему выбор до конца подписки или новая подписка
+ * дополнительный месяц берем подписку и с тому же сроку добавляем еще 30 дней подписки
+ * отложенный старт - ставим дату начала когда выбрана, затем нажатие кнопки активируем active=1
+ * */

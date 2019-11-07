@@ -150,4 +150,21 @@ class ActivateController extends Controller
         $hi->save();
     }
 
+    public function subscribe_activate(Request $request)
+    {
+        $user_id = $request->user_id;
+        $subscribe = Subscribe::where('user_id', $user_id)->first();
+        $subscribe->active = 1;
+        $subscribe->save();
+
+        $history = new SubscriptionHistory();
+        $history->subscribe_id = $subscribe->id;
+        $history->type = "App\\Subscribe";
+        $history->plan_id = $subscribe->id;
+        $history->start = $subscribe->last_invoice->paid_at;
+        $history->end = $subscribe->last_invoice->paid_at->addDays($subscribe->last_invoice->period);
+        $history->save();
+    }
+
+
 }
