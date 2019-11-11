@@ -52,8 +52,7 @@ Route::middleware('auth.basic')->group(function () {
     Route::prefix('ref')->group(function() {
         Route::post('create-ref', 'RefController@create_ref_invoice');    // Создаем RefInvoice
         Route::post('create-ref-invoice-details', 'RefController@create_ref_invoice_detail');   // Добавляем к RefInvoice RefInvoiceDetail
-        Route::post('get-test-ref/{ref_invoice_id}', 'RefController@ref');
-
+        Route::post('get-ref-inv', 'RefController@ref');
     });
     Route::prefix('db')->group(function() {
         Route::get('insert-tables', 'DbController@insert_tables')->name('insert_tables');

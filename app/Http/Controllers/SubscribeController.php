@@ -259,7 +259,7 @@ class SubscribeController extends Controller
         $subscribe->term = $plan->period.' days';
         $subscribe->bot_count = $plan->bot_count;
         $subscribe->start_at = Carbon::today();
-        $subscribe->start_at = Carbon::today()->addDays($plan->period);
+        $subscribe->end_at = Carbon::today()->addDays($plan->period);
         $subscribe->active = 1;
         $subscribe->save();
         return response()->json(['error' => 0, 'message' => 'Пользователь успешно добавлен']);

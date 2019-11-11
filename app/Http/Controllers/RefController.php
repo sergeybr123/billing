@@ -111,10 +111,41 @@ class RefController extends Controller
         return $ref_invoice;
     }
 
-    public function ref($ref_invoice_id) //invoice_id=101563
+    public function ref(Request $request) //invoice_id=101563
     {
 //        return response()->json(['test']);
-        $ref_invoice = RefInvoice::findOrFail($ref_invoice_id);
+//        dd($request);
+        $ref_invoice = RefInvoice::findOrFail($request->ref);
+        if(!$ref_invoice) {
+            $ref = new RefInvoice();
+            if($request->manager_id) {
+                $ref->manager_id = $request->manager_id;
+            }
+            $ref->user_id = $request->user_id;
+            $ref->type_id = $request->type_id;
+            $ref->save();
+        }
+        if($request->period != 0) {
+            $set_plan = Plan::findOrFail($request->plan_id);
+
+            $new_ref_details = new RefInvoiceDetail();
+            $new_ref_details->paid_id = $set_plan->id;
+            $new_ref_details->paid_type = "App\\Plan";
+            $new_ref_details->price = $set_plan->price;
+            $new_ref_details->quantity = $request->quantity;
+            $new_ref_details->discount = $typed->discount ?? 0;
+            if($typed->discount) {
+                if($request->quantit >= 12) {
+                    $new_ref_details->amount = ($typed->price -($typed->price * ($typed->discount / 100))) * $request->quantity;
+                } else {
+                    $new_ref_details->amount = $typed->price * $request->quantity;
+                }
+            } else {
+                $new_ref_details->amount = $typed->price * $request->quantity;
+            }
+            $new_ref_details->save();
+        }
+
         $subscribe = Subscribe::where('user_id', $ref_invoice->user_id)->first();
         $plan_sub = Plan::findOrFail($subscribe->plan_id);
         $ref_invoice_plan = $ref_invoice->details->where('type', 'plan')->first(); // Получаем информацию о новой подписке
