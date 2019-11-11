@@ -41,23 +41,30 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
-//        $plan_id = $request->plan;
+////        $plan_id = $request->plan;
+////
+////        $bot_count = $request->bot_count;
+//        $user = User::findOrFail($request->user_id);
+//        $subscribe = Subscribe::where('user_id', $request->user_id)->first();
+//        $plan = Plan::where('id', $subscribe->plan_id)->first();
+////        $bot_create = $request->bot_create;
 //
-//        $bot_count = $request->bot_count;
-        $user = User::findOrFail($request->user_id);
-        $subscribe = Subscribe::where('user_id', $request->user_id)->first();
-        $plan = Plan::where('id', $subscribe->plan_id)->first();
-//        $bot_create = $request->bot_create;
+//
+////        $inv = InvoiceModel::create($request->all());
+////        if($inv) {
+////            return $inv;
+////        } else {
+////            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
+////        }
+//
+//        return $request->user_id;
 
-
-//        $inv = InvoiceModel::create($request->all());
-//        if($inv) {
-//            return $inv;
-//        } else {
-//            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
-//        }
-
-        return $request->user_id;
+        $inv = InvoiceModel::create($request->all());
+        if($inv) {
+            return $inv;
+        } else {
+            return ['error' => 1, 'message' => 'Ошибка добавления записи'];
+        }
     }
 
     /**
