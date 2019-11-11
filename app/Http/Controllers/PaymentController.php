@@ -244,16 +244,16 @@ class PaymentController extends Controller
                 // Продление
                 $subscribe->plan_id = $plan->id;
                 if ($invoice->type_id == 1) {
-//                    if ($subscribe->end_at < $at_date) {
-//                        $subscribe->start_at = Carbon::parse($at_date);
-//                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
+                    if ($subscribe->end_at < $at_date) {
+                        $subscribe->start_at = Carbon::parse($at_date);
+                        $subscribe->end_at = Carbon::parse($at_date)->addMonths($invoice->period);
+                    }
+                    if ($plan->interval == 'month') {
+                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
+                    }
+//                    else {
+//                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear();
 //                    }
-//                    if ($plan->interval == 'month') {
-//                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addMonths($invoice->period);
-//                    }
-////                    else {
-////                        $subscribe->end_at = Carbon::parse($subscribe->end_at)->addYear();
-////                    }
                 } // Подписка
                 elseif ($invoice->type_id == 2) {
                     $subscribe->start_at = Carbon::parse($at_date)->format('Y-m-d');
