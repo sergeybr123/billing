@@ -258,6 +258,7 @@ class SubscribeController extends Controller
         $subscribe->interval = $plan->interval;
         $subscribe->term = $plan->period.' days';
         $subscribe->bot_count = $plan->bot_count;
+        $subscribe->trial_ends_at = Carbon::today()->addDays($plan->period);
         $subscribe->start_at = Carbon::today();
         $subscribe->end_at = Carbon::today()->addDays($plan->period);
         $subscribe->active = 1;

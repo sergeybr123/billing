@@ -23,6 +23,7 @@ class Invoice extends JsonResource
             'types' => $this->types,
             'plan_id' => $this->plan_id,
             'period' => $this->period,
+            'ref_options' => $this->ref_options,
             'start_subscribe' => $this->start_subscribe ? Carbon::parse($this->start_subscribe)->toDateTimeString() : null,
             'service_id' => $this->service_id,
             'description' => $this->description,
@@ -35,7 +36,7 @@ class Invoice extends JsonResource
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->toDateTimeString() : null,
             'plan' => $this->plan,
             'service' => $this->service,
-            'orders' => $this->orders,
+//            'orders' => $this->orders,
         ];
     }
 }

@@ -19,13 +19,16 @@ class Invoice extends Model
         'type_id',
         'plan_id',
         'period',
+        'ref_options',
         'service_id',
         'description',
         'paid',
+        'options',
         'status',
     ];
 
     protected $casts = [
+        'ref_options' => 'array',
         'options' => 'array',
     ];
 
@@ -50,10 +53,5 @@ class Invoice extends Model
     public function service()
     {
         return $this->hasOne('App\Service', 'id', 'service_id');
-    }
-
-    public function ref_invoice()
-    {
-        return $this->hasOne('App\RefInvoice', 'invoice_id', 'id');
     }
 }

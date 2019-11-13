@@ -235,7 +235,7 @@ class RefController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 1]);
         }
-        return $ref;
+//        return $ref;
     }
 
     public function test_ref()
